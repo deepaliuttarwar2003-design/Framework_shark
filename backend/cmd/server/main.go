@@ -6,15 +6,13 @@ import (
 	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/core/events"
 	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/core/middleware"
 	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/core/module"
-	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/internal/wiring"
+	modules "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
 	cfg := config.Load()
-
 	db := database.Connect(cfg)
-
 	bus := events.New()
 
 	ctx := &module.ModuleContext{
@@ -35,11 +33,15 @@ func main() {
 
 	loader := module.NewLoader()
 
-	for _, m := range wiring.LoadModules() {
+	// ✅ Load modules from generated wiring
+	for _, m := range modules.LoadModules() {
 		loader.Register(m)
 	}
 
+	// ✅ Initialize all modules
 	loader.InitAll(ctx)
+
+	// ✅ Register routes (FIXED)
 	loader.SetupRoutes(r)
 
 	r.Run(":8080")
