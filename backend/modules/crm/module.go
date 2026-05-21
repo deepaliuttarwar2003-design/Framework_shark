@@ -43,4 +43,6 @@ func (m *Module) RegisterRoutes(r *gin.RouterGroup) {
 	r.PUT("/:id", m.handler.Update)
 
 	r.DELETE("/:id", m.handler.Delete)
+
+	r.POST("/comment", m.handler.AddComment)
 }
