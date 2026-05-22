@@ -46,6 +46,10 @@ func (s *Service) Create(input dto.CreateInventoryDTO) (model.Inventory, error) 
 		return model.Inventory{}, err
 	}
 
+	if input.Status == "" {
+		input.Status = "Active"
+	}
+
 	entity := model.Inventory{
 		// ID:   inventory.GenerateID(),
 		Name:       input.Name,
@@ -53,6 +57,7 @@ func (s *Service) Create(input dto.CreateInventoryDTO) (model.Inventory, error) 
 		Price:      input.Price,
 		Stock:      input.Stock,
 		CategoryID: catID,
+		Status:     input.Status,
 	}
 
 	result, err := s.repo.Create(entity)
@@ -78,6 +83,7 @@ func (s *Service) Update(id string, input dto.CreateInventoryDTO) (*model.Invent
 		Price:      input.Price,
 		Stock:      input.Stock,
 		CategoryID: catID,
+		Status:     input.Status,
 	}
 
 	updated, err := s.repo.Update(id, entity)

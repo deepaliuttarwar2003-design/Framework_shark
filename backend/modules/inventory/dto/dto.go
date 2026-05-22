@@ -6,9 +6,16 @@ type CreateInventoryDTO struct {
 	Stock int `json:"stock" binding:"required"`
 	Price float64 `json:"price" binding:"required"`
 	CategoryID string `json:"categoryID" binding:"required"`
-
+	Status string `json:"status"`
 }
 
 type CreateCategoryDTO struct{
 	CategoryName string `json:"categoryname" binding:"required"`
 }
+
+
+
+
+
+
+ 

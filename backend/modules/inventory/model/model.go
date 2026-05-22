@@ -9,4 +9,5 @@ type Inventory struct {
 	Stock      int                `bson:"stock" json:"stock"`
 	Price      float64            `bson:"price" json:"price"`
 	CategoryID primitive.ObjectID `bson:"categoryID" json:"categoryID"`
+	Status 	   string 			  `bson:"status" json:"status"`
 }
