@@ -36,11 +36,11 @@ func (m *Module) Init(ctx *module.ModuleContext) error {
 
 func (m *Module) RegisterRoutes(r *gin.RouterGroup) {
 
-	r.POST("/", m.handler.Create)
+	r.POST("/create", m.handler.Create)
 
-	r.GET("/", m.handler.GetAll)
+	r.GET("/getall", m.handler.GetAll)
 
-	r.PUT("/:id", m.handler.Update)
+	r.PUT("/update/:id", m.handler.Update)
 
-	r.DELETE("/:id", m.handler.Delete)
+	r.DELETE("/delete/:id", m.handler.Delete)
 }

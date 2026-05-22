@@ -25,4 +25,5 @@ type Crm struct {
 	ZipCode     string `bson:"zip_code" json:"zip_code"`
 	Country     string `bson:"country" json:"country"`
 	Website     string `bson:"website" json:"website"`
+	Stage     string `bson:"stage" json:"stage"`
 }

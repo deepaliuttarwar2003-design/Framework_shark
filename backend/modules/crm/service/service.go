@@ -37,6 +37,7 @@ func (s *Service) Create(req dto.CreateCrmDTO) (interface{}, error) {
 		ZipCode:       req.ZipCode,
 		Country:       req.Country,
 		Website:       req.Website,
+		Stage:         req.Stage,
 	}
 
 	return s.repo.Create(data)
