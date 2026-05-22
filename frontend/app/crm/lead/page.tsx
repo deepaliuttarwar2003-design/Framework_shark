@@ -42,6 +42,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useRouter } from "next/navigation";
 
 import {
   Search,
@@ -64,6 +65,8 @@ const STAGES = [
 ];
 
 export default function LeadPage() {
+  const router = useRouter();
+
   const [search, setSearch] = useState("");
 
   const [open, setOpen] = useState(false);
@@ -72,19 +75,32 @@ export default function LeadPage() {
     useState<Lead | null>(null);
 
   const [formData, setFormData] = useState({
-    name: "",
-    company: "",
-    amount: "",
-    phone: "",
+    lead_title: "",
+    first_name: "",
+    last_name: "",
+    telephone: "",
     email: "",
-    stage: "Contacted",
+    lead_value: 0,
+    notes: "",
+    source: "",
+    category: "",
+    tags: [] as string[],
+    last_contacted: "",
+    company_name: "",
+    street: "",
+    city: "",
+    state: "",
+    zip_code: "",
+    country: "",
+    website: "",
+    stage: "New",
   });
 
   const {
     data: leads = [],
     isLoading,
   } = useGetLeadsQuery();
-
+  console.log("LEADS", leads);
   const [createLead] =
     useCreateLeadMutation();
 
@@ -94,30 +110,42 @@ export default function LeadPage() {
   const [deleteLeadApi] =
     useDeleteLeadMutation();
 
-  const filteredLeads = leads.filter(
-    (lead: Lead) =>
-      lead.name
-        .toLowerCase()
-        .includes(search.toLowerCase()) ||
-      lead.company
-        .toLowerCase()
-        .includes(search.toLowerCase())
-  );
+  const filteredLeads = leads.filter((lead: Lead) =>
+  lead.lead_title
+    ?.toLowerCase()
+    .includes(search.toLowerCase()) ||
+  lead.company_name
+    ?.toLowerCase()
+    .includes(search.toLowerCase())
+);
 
   const resetForm = () => {
     setFormData({
-      name: "",
-      company: "",
-      amount: "",
-      phone: "",
+      lead_title: "",
+      first_name: "",
+      last_name: "",
+      telephone: "",
       email: "",
-      stage: "Contacted",
+      lead_value: 0,
+      notes: "",
+      source: "",
+      category: "",
+      tags: [],
+      last_contacted: "",
+      company_name: "",
+      street: "",
+      city: "",
+      state: "",
+      zip_code: "",
+      country: "",
+      website: "",
+      stage: "New",
     });
   };
 
   const handleSave = async () => {
-    if (!formData.name) {
-      alert("Lead name is required");
+    if (!formData.lead_title) {
+      alert("Lead title is required");
       return;
     }
 
@@ -171,7 +199,7 @@ export default function LeadPage() {
 
     if (!destination) return;
 
-    const lead = leads.find(
+    const lead = filteredLeads.find(
       (item: Lead) =>
         item.id === draggableId
     );
@@ -249,25 +277,33 @@ export default function LeadPage() {
                     </h2>
 
                     <button
-                      // onClick={() => {
-                      //   setSelectedLead(
-                      //     null
-                      //   );
+                      onClick={() => {
+                        setSelectedLead(null);
 
-                      //   resetForm();
+                        setFormData({
+                          lead_title: "",
+                          first_name: "",
+                          last_name: "",
+                          telephone: "",
+                          email: "",
+                          lead_value: 0,
+                          notes: "",
+                          source: "",
+                          category: "",
+                          tags: [],
+                          last_contacted: "",
+                          company_name: "",
+                          street: "",
+                          city: "",
+                          state: "",
+                          zip_code: "",
+                          country: "",
+                          website: "",
+                          stage: stage,
+                        });
 
-                      //   setFormData(
-                      //     (
-                      //       prev
-                      //     ) => ({
-                      //       ...prev,
-                      //       stage,
-                      //     })
-                      //   );
-
-                      //   setOpen(true);
-                      // }}
-
+                        setOpen(true);
+                      }}
                       className="w-9 h-9 rounded-full border flex items-center justify-center hover:bg-gray-100"
                     >
                       <Plus size={18} />
@@ -320,7 +356,12 @@ export default function LeadPage() {
                                     }
                                     {...provided.draggableProps}
                                     {...provided.dragHandleProps}
-                                    className="bg-[#f4f4f7] rounded-2xl p-5 relative shadow-sm"
+                                     onClick={() =>
+                                     router.push(
+                                      `/crm/leadDetail?id=${lead.id}`
+                                    )
+                                     }
+                                    className="bg-[#f4f4f7] rounded-2xl p-5 relative shadow-sm cursor-pointer"
                                   >
 
                                     {/* Menu */}
@@ -343,23 +384,27 @@ export default function LeadPage() {
                                                 lead
                                               );
 
-                                              setFormData(
-                                                {
-                                                  name:
-                                                    lead.name,
-                                                  company:
-                                                    lead.company,
-                                                  amount:
-                                                    lead.amount,
-                                                  phone:
-                                                    lead.phone,
-                                                  email:
-                                                    lead.email,
-                                                  stage:
-                                                    lead.stage,
-                                                }
-                                              );
-
+                                              setFormData({
+                                                lead_title: lead.lead_title || "",
+                                                first_name: lead.first_name || "",
+                                                last_name: lead.last_name || "",
+                                                telephone: lead.telephone || "",
+                                                email: lead.email || "",
+                                                lead_value: lead.lead_value || 0,
+                                                notes: lead.notes || "",
+                                                source: lead.source || "",
+                                                category: lead.category || "",
+                                                tags: lead.tags || [],
+                                                last_contacted: lead.last_contacted || "",
+                                                company_name: lead.company_name || "",
+                                                street: lead.street || "",
+                                                city: lead.city || "",
+                                                state: lead.state || "",
+                                                zip_code: lead.zip_code || "",
+                                                country: lead.country || "",
+                                                website: lead.website || "",
+                                                stage: lead.stage || "",
+                                              });
                                               setOpen(
                                                 true
                                               );
@@ -387,19 +432,18 @@ export default function LeadPage() {
                                     {/* Card */}
                                     <h3 className="text-[24px] font-bold text-gray-700">
                                       {
-                                        lead.name
+                                        lead.first_name + " " + lead.last_name
                                       }
                                     </h3>
 
                                     <p className="text-gray-500 mb-3">
                                       {
-                                        lead.company
-                                      }
+                                        lead.email}
                                     </p>
 
                                     <Badge className="bg-green-700 text-white rounded-md mb-4">
                                       {
-                                        lead.amount
+                                        lead.lead_value
                                       }
                                     </Badge>
 
@@ -408,7 +452,7 @@ export default function LeadPage() {
                                       <p>
                                         Phone:{" "}
                                         {
-                                          lead.phone
+                                          lead.telephone
                                         }
                                       </p>
 
@@ -464,83 +508,216 @@ export default function LeadPage() {
         open={open}
         onOpenChange={setOpen}
       >
-        <DialogContent className="rounded-[30px]">
+        <DialogContent className="max-w-5xl max-h-[95vh] overflow-y-auto rounded-[30px]">
 
           <DialogHeader>
-
-            <DialogTitle className="text-2xl font-bold">
-
-              {selectedLead
-                ? "Edit Lead"
-                : "Create Lead"}
-
+            <DialogTitle className="text-3xl font-bold text-green-700">
+              Create Deals
             </DialogTitle>
-
           </DialogHeader>
 
-          <div className="space-y-4 py-4">
+          <div className="grid grid-cols-2 gap-5 py-4">
 
             <Input
-              placeholder="Lead Name"
-              value={formData.name}
+              placeholder="Lead Title"
+              value={formData.lead_title}
               onChange={(e) =>
                 setFormData({
                   ...formData,
-                  name:
-                    e.target.value,
+                  lead_title: e.target.value,
                 })
               }
             />
 
             <Input
-              placeholder="Company"
-              value={formData.company}
+              placeholder="First Name"
+              value={formData.first_name}
               onChange={(e) =>
                 setFormData({
                   ...formData,
-                  company:
-                    e.target.value,
+                  first_name: e.target.value,
                 })
               }
             />
 
             <Input
-              placeholder="Amount"
-              value={formData.amount}
+              placeholder="Last Name"
+              value={formData.last_name}
               onChange={(e) =>
                 setFormData({
                   ...formData,
-                  amount:
-                    e.target.value,
+                  last_name: e.target.value,
                 })
               }
             />
 
             <Input
-              placeholder="Phone"
-              value={formData.phone}
+              placeholder="Telephone"
+              value={formData.telephone}
               onChange={(e) =>
                 setFormData({
                   ...formData,
-                  phone:
-                    e.target.value,
+                  telephone: e.target.value,
                 })
               }
             />
 
             <Input
               placeholder="Email"
+              className="col-span-2"
               value={formData.email}
               onChange={(e) =>
                 setFormData({
                   ...formData,
-                  email:
-                    e.target.value,
+                  email: e.target.value,
                 })
               }
             />
 
-            <Textarea placeholder="Notes..." />
+            <Input
+              type="number"
+              placeholder="Lead Value"
+              value={formData.lead_value}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  lead_value: Number(e.target.value),
+                })
+              }
+            />
+
+            <Input
+              placeholder="Source"
+              value={formData.source}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  source: e.target.value,
+                })
+              }
+            />
+
+            <Input
+              placeholder="Category"
+              value={formData.category}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  category: e.target.value,
+                })
+              }
+            />
+
+            <Input
+              placeholder="Tags"
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  tags: e.target.value.split(","),
+                })
+              }
+            />
+
+            <Input
+              type="date"
+              value={formData.last_contacted}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  last_contacted: e.target.value,
+                })
+              }
+            />
+
+            <Input
+              placeholder="Company Name"
+              value={formData.company_name}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  company_name: e.target.value,
+                })
+              }
+            />
+
+            <Input
+              placeholder="Street"
+              value={formData.street}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  street: e.target.value,
+                })
+              }
+            />
+
+            <Input
+              placeholder="City"
+              value={formData.city}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  city: e.target.value,
+                })
+              }
+            />
+
+            <Input
+              placeholder="State"
+              value={formData.state}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  state: e.target.value,
+                })
+              }
+            />
+
+            <Input
+              placeholder="Zip Code"
+              value={formData.zip_code}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  zip_code: e.target.value,
+                })
+              }
+            />
+
+            <Input
+              placeholder="Country"
+              value={formData.country}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  country: e.target.value,
+                })
+              }
+            />
+
+            <Input
+              placeholder="Website"
+              className="col-span-2"
+              value={formData.website}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  website: e.target.value,
+                })
+              }
+            />
+
+            <Textarea
+              placeholder="Notes"
+              className="col-span-2 min-h-[120px]"
+              value={formData.notes}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  notes: e.target.value,
+                })
+              }
+            />
 
           </div>
 
@@ -548,17 +725,13 @@ export default function LeadPage() {
 
             <Button
               variant="outline"
-              onClick={() =>
-                setOpen(false)
-              }
+              onClick={() => setOpen(false)}
             >
               Cancel
             </Button>
 
-            <Button
-              onClick={handleSave}
-            >
-              Save Lead
+            <Button onClick={handleSave}>
+              Create Deal
             </Button>
 
           </DialogFooter>
