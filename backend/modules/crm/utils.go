@@ -1,7 +1,7 @@
 package crm
 
-import "github.com/google/uuid"
+// // import "github.com/google/uuid"
 
-func GenerateID() string {
-	return uuid.New().String()
-}
+// func GenerateID() string {
+// 	return uuid.New().String()
+// }

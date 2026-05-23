@@ -1,37 +1,78 @@
 package service
 
 import (
-	repository "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/repository"
-	model "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/model"
-	dto "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/dto"
-	crm "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm"
-	events "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/core/events"
+	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/dto"
+	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/model"
+	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/repository"
 )
 
 type Service struct {
 	repo *repository.Repository
 }
 
-func NewService() *Service {
+func NewService(repo *repository.Repository) *Service {
 	return &Service{
-		repo: repository.NewRepository(),
+		repo: repo,
 	}
 }
 
-func (s *Service) GetAll() []model.Crm {
-	return s.repo.FindAll()
-}
+func (s *Service) Create(req dto.CreateCrmDTO) (interface{}, error) {
 
-func (s *Service) Create(input dto.CreateCrmDTO) model.Crm {
-
-	entity := model.Crm{
-		ID:   crm.GenerateID(),
-		Name: input.Name,
+	data := model.Crm{
+		LeadTitle:     req.LeadTitle,
+		FirstName:     req.FirstName,
+		LastName:      req.LastName,
+		Telephone:     req.Telephone,
+		Email:         req.Email,
+		LeadValue:     req.LeadValue,
+		Notes:         req.Notes,
+		Source:        req.Source,
+		Category:      req.Category,
+		Tags:          req.Tags,
+		LastContacted: req.LastContacted,
+		CompanyName:   req.CompanyName,
+		Street:        req.Street,
+		City:          req.City,
+		State:         req.State,
+		ZipCode:       req.ZipCode,
+		Country:       req.Country,
+		Website:       req.Website,
+		Stage:         req.Stage,
 	}
 
-	result := s.repo.Save(entity)
+	return s.repo.Create(data)
+}
 
-	events.Publish("crm.created", result)
+func (s *Service) GetAll() ([]model.Crm, error) {
+	return s.repo.GetAll()
+}
 
-	return result
+func (s *Service) Update(id string, req dto.CreateCrmDTO) error {
+
+	updateData := map[string]interface{}{
+		"lead_title":     req.LeadTitle,
+		"first_name":     req.FirstName,
+		"last_name":      req.LastName,
+		"telephone":      req.Telephone,
+		"email":          req.Email,
+		"lead_value":     req.LeadValue,
+		"notes":          req.Notes,
+		"source":         req.Source,
+		"category":       req.Category,
+		"tags":           req.Tags,
+		"last_contacted": req.LastContacted,
+		"company_name":   req.CompanyName,
+		"street":         req.Street,
+		"city":           req.City,
+		"state":          req.State,
+		"zip_code":       req.ZipCode,
+		"country":        req.Country,
+		"website":        req.Website,
+	}
+
+	return s.repo.Update(id, updateData)
+}
+
+func (s *Service) Delete(id string) error {
+	return s.repo.Delete(id)
 }

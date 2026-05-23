@@ -42,7 +42,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useRouter } from "next/navigation";
+import LeadDetailPage from "../leadDetail/page";
 
 import {
   Search,
@@ -65,11 +65,10 @@ const STAGES = [
 ];
 
 export default function LeadPage() {
-  const router = useRouter();
-
   const [search, setSearch] = useState("");
 
   const [open, setOpen] = useState(false);
+  const [detailOpen, setDetailOpen] = useState(false);
 
   const [selectedLead, setSelectedLead] =
     useState<Lead | null>(null);
@@ -110,14 +109,14 @@ export default function LeadPage() {
   const [deleteLeadApi] =
     useDeleteLeadMutation();
 
-  const filteredLeads = leads.filter((lead: Lead) =>
-  lead.lead_title
-    ?.toLowerCase()
-    .includes(search.toLowerCase()) ||
-  lead.company_name
-    ?.toLowerCase()
-    .includes(search.toLowerCase())
-);
+  const filteredLeads = (leads?.data || []).filter((lead: Lead) =>
+    lead.lead_title
+      .toLowerCase()
+      .includes(search.toLowerCase()) ||
+    lead.company_name
+      .toLowerCase()
+      .includes(search.toLowerCase())
+  );
 
   const resetForm = () => {
     setFormData({
@@ -199,7 +198,7 @@ export default function LeadPage() {
 
     if (!destination) return;
 
-    const lead = filteredLeads.find(
+    const lead = leads.find(
       (item: Lead) =>
         item.id === draggableId
     );
@@ -233,7 +232,7 @@ export default function LeadPage() {
 
         {/* Header */}
         <div className="mb-5">
-          <h1 className="text-[32px] font-bold text-black-700 mb-5">
+          <h1 className="text-[42px] font-bold text-black-700 mb-2">
             Leads
           </h1>
 
@@ -270,11 +269,23 @@ export default function LeadPage() {
                 <div className="bg-white border rounded-2xl overflow-hidden">
 
                   {/* Column Header */}
-                  <div className="flex items-center justify-between border-b px-5 py-4">
+                  <div className="flex items-center justify-between border-b px-5 py-3">
 
-                    <h2 className="text-[28px] font-bold text-green-700">
-                      {stage}
-                    </h2>
+                    <h2
+  className={`text-[23px] font-bold ${
+    stage === "New"
+      ? "text-blue-600"
+      : stage === "Contacted"
+      ? "text-red-600"
+      : stage === "Qualified"
+      ? "text-green-600"
+      : stage === "Disqualified"
+      ? "text-yellow-500"
+      : "text-gray-700"
+  }`}
+>
+  {stage}
+</h2>
 
                     <button
                       onClick={() => {
@@ -356,11 +367,10 @@ export default function LeadPage() {
                                     }
                                     {...provided.draggableProps}
                                     {...provided.dragHandleProps}
-                                     onClick={() =>
-                                     router.push(
-                                      `/crm/leadDetail?id=${lead.id}`
-                                    )
-                                     }
+                                    onClick={() => {
+                                   setSelectedLead(lead);
+                                   setDetailOpen(true);
+                                    }}
                                     className="bg-[#f4f4f7] rounded-2xl p-5 relative shadow-sm cursor-pointer"
                                   >
 
@@ -508,16 +518,16 @@ export default function LeadPage() {
         open={open}
         onOpenChange={setOpen}
       >
-        <DialogContent className="max-w-5xl max-h-[95vh] overflow-y-auto rounded-[30px]">
-
+        {/* <DialogContent className="max-w-5xl max-h-[95vh] overflow-y-auto rounded-[30px]"> */}
+<DialogContent className="w-[95vw] max-w-5xl max-h-[95vh] overflow-y-auto rounded-[30px] p-8">
           <DialogHeader>
             <DialogTitle className="text-3xl font-bold text-green-700">
               Create Deals
             </DialogTitle>
           </DialogHeader>
 
-          <div className="grid grid-cols-2 gap-5 py-4">
-
+          {/* <div className="grid grid-cols-2 gap-5 py-4"> */}
+<div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-6 px-2">
             <Input
               placeholder="Lead Title"
               value={formData.lead_title}
@@ -738,7 +748,23 @@ export default function LeadPage() {
 
         </DialogContent>
       </Dialog>
+      {/* Lead Detail Popup */}
+      <Dialog
+  open={detailOpen}
+  onOpenChange={setDetailOpen}
+>
+  <DialogContent className="overflow-hidden">
 
+    <DialogHeader className="hidden">
+      <DialogTitle>
+        Lead Details
+      </DialogTitle>
+    </DialogHeader>
+
+    <LeadDetailPage lead={selectedLead} />
+
+  </DialogContent>
+</Dialog>
       {/* Floating Button */}
       <button
         onClick={() => {

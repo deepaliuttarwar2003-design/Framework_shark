@@ -5,39 +5,115 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/dto"
 	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/service"
-	dto "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/dto"
 )
 
 type Handler struct {
 	service *service.Service
 }
 
-func NewHandler(service *service.Service) *Handler {
-	return &Handler{service: service}
+func NewHandler(s *service.Service) *Handler {
+	return &Handler{
+		service: s,
+	}
+}
+
+func (h *Handler) Create(c *gin.Context) {
+
+	var req dto.CreateCrmDTO
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+
+		return
+	}
+
+	result, err := h.service.Create(req)
+
+	if err != nil {
+
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{
+		"message": "CRM created successfully",
+		"data":    result,
+	})
 }
 
 func (h *Handler) GetAll(c *gin.Context) {
 
-	data := h.service.GetAll()
+	data, err := h.service.GetAll()
+
+	if err != nil {
+
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+
+		return
+	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"data": data,
 	})
 }
 
-func (h *Handler) Create(c *gin.Context) {
+func (h *Handler) Update(c *gin.Context) {
 
-	var input dto.CreateCrmDTO
+	id := c.Param("id")
 
-	if err := c.ShouldBindJSON(&input); err != nil {
+	var req dto.CreateCrmDTO
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
+
 		return
 	}
 
-	result := h.service.Create(input)
+	err := h.service.Update(id, req)
 
-	c.JSON(http.StatusOK, result)
+	if err != nil {
+
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "CRM updated successfully",
+	})
+}
+
+func (h *Handler) Delete(c *gin.Context) {
+
+	id := c.Param("id")
+
+	err := h.service.Delete(id)
+
+	if err != nil {
+
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "CRM deleted successfully",
+	})
 }

@@ -1,14 +1,13 @@
 package crm
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+)
 
-func (m *CRMModule) RegisterRoutes(r *gin.RouterGroup) {
+func RegisterCrmRoutes(r *gin.RouterGroup) {
 
-	r.GET("/leads", m.GetLeads)
+	group := r.Group("/crm")
 
-	r.POST("/leads", m.CreateLead)
-
-	r.PUT("/leads/:id", m.UpdateLead)
-
-	r.DELETE("/leads/:id", m.DeleteLead)
+	// TODO: attach handlers
+	_ = group
 }
