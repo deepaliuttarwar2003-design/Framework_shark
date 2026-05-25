@@ -25,7 +25,7 @@ export const inventoryApiSlice =
                 Product[],
                 void
             >({
-                query: () => "/inventory/getall",
+                query: () => "/api/inventory/getAllData",
 
                 providesTags: ["Inventory"],
             }),
@@ -36,7 +36,7 @@ export const inventoryApiSlice =
                 Partial<Product>
             >({
                 query: (data) => ({
-                    url: "/inventory/create",
+                    url: "/api/inventory/create",
                     method: "POST",
                     body: data,
                 }),
@@ -48,7 +48,7 @@ export const inventoryApiSlice =
                 Partial<Product>
             >({
                 query: (data) => ({
-                    url: "/inventory/createCategory",
+                    url: "/api/inventory/category/createCategory",
                     method: "POST",
                     body: data,
                 }),
@@ -60,7 +60,7 @@ export const inventoryApiSlice =
                 Partial<Product>
             >({
                 query: ({ id, ...data }) => ({
-                    url: `/inventory/updateCategory/${id}`,
+                    url: `/api/inventory/category/updateCategory/${id}`,
                     method: "PUT",
                     body: data,
                 }),
@@ -72,7 +72,7 @@ export const inventoryApiSlice =
                 number
             >({
                 query: (id) => ({
-                    url: `/inventory/deleteCategory/${id}`,
+                    url: `/api/inventory/category/deleteCategory/${id}`,
                     method: "DELETE",
                 }),
 
@@ -82,7 +82,7 @@ export const inventoryApiSlice =
                 Product[],
                 void
             >({
-                query: () => "/inventory/getallCategory",
+                query: () => "/api/inventory/category/getAllCategory",
 
                 providesTags: ["Inventory"],
             }),
@@ -92,7 +92,7 @@ export const inventoryApiSlice =
                 Partial<Product>
             >({
                 query: ({ id, ...data }) => ({
-                    url: `/inventory/update/${id}`,
+                    url: `/api/inventory/update/${id}`,
 
                     method: "PUT",
 
@@ -108,7 +108,7 @@ export const inventoryApiSlice =
                 number
             >({
                 query: (id) => ({
-                    url: `/inventory/delete/${id}`,
+                    url: `/api/inventory/delete/${id}`,
 
                     method: "DELETE",
                 }),
