@@ -2,7 +2,7 @@
 
 import { Google_Sans } from "next/font/google";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import {
   useGetLeadsQuery,
@@ -95,10 +95,21 @@ export default function LeadPage() {
     stage: "New",
   });
 
+
   const {
-    data: leads = [],
-    isLoading,
-  } = useGetLeadsQuery();
+  data,
+  isLoading,
+} = useGetLeadsQuery();
+
+const apiLeads = data?.data || [];
+
+const [leads, setLeads] = useState<Lead[]>([]);
+
+useEffect(() => {
+  setLeads(apiLeads);
+}, [apiLeads]);
+  
+
   console.log("LEADS", leads);
   const [createLead] =
     useCreateLeadMutation();
@@ -109,7 +120,7 @@ export default function LeadPage() {
   const [deleteLeadApi] =
     useDeleteLeadMutation();
 
-  const filteredLeads = (leads?.data || []).filter((lead: Lead) =>
+  const filteredLeads = leads.filter((lead: Lead) =>
     lead.lead_title
       .toLowerCase()
       .includes(search.toLowerCase()) ||
@@ -117,7 +128,7 @@ export default function LeadPage() {
       .toLowerCase()
       .includes(search.toLowerCase())
   );
-
+   
   const resetForm = () => {
     setFormData({
       lead_title: "",
@@ -187,35 +198,53 @@ export default function LeadPage() {
       console.log(error);
     }
   };
-
   const onDragEnd = async (
-    result: DropResult
-  ) => {
-    const {
-      destination,
-      draggableId,
-    } = result;
+  result: DropResult
+) => {
 
-    if (!destination) return;
+  const {
+    destination,
+    draggableId,
+  } = result;
 
-    const lead = leads.find(
-      (item: Lead) =>
-        item.id === draggableId
-    );
+  if (!destination) return;
 
-    if (!lead) return;
+  const updatedLeads = leads.map((lead) => {
 
-    try {
-      await updateLead({
+    if (lead.id === draggableId) {
+
+      return {
         ...lead,
-        stage:
-          destination.droppableId,
-      }).unwrap();
-    } catch (error) {
-      console.log(error);
-    }
-  };
+        stage: destination.droppableId,
+      };
 
+    }
+
+    return lead;
+
+  });
+
+  // ✅ instant UI update
+  setLeads(updatedLeads);
+
+  const updatedLead = updatedLeads.find(
+    (lead) => lead.id === draggableId
+  );
+
+  if (!updatedLead) return;
+
+  try {
+
+    await updateLead(updatedLead).unwrap();
+
+    console.log("STAGE UPDATED");
+
+  } catch (error) {
+
+    console.log(error);
+
+  }
+};
   if (isLoading) {
     return (
       <div className="p-10">
@@ -232,10 +261,10 @@ export default function LeadPage() {
 
         {/* Header */}
         <div className="mb-5">
-          <h1 className="text-[42px] font-bold text-black-700 mb-2">
-            Leads
-          </h1>
-
+        <h1 className="text-[40px] font-extrabold text-black-400 mb-2 tracking-wide drop-shadow-[0_0_20px_rgba(74,222,128,1)]">
+  Leads
+</h1>  
+         
           <div className="relative w-[380px]">
             <Search
               size={18}
@@ -266,16 +295,16 @@ export default function LeadPage() {
                 key={stage}
                 className="min-w-[320px] w-[320px]"
               >
-                <div className="bg-white border rounded-2xl overflow-hidden">
+                <div className="bg-[#f6f6f6] border rounded-3xl border-gray-700 overflow-hidden">
 
                   {/* Column Header */}
                   <div className="flex items-center justify-between border-b px-5 py-3">
 
                     <h2
-  className={`text-[23px] font-bold ${
-    stage === "New"
+                    className={`text-[20px] font-bold ${
+                    stage === "New"
       ? "text-blue-600"
-      : stage === "Contacted"
+               : stage === "Contacted"
       ? "text-red-600"
       : stage === "Qualified"
       ? "text-green-600"
@@ -371,7 +400,7 @@ export default function LeadPage() {
                                    setSelectedLead(lead);
                                    setDetailOpen(true);
                                     }}
-                                    className="bg-[#f4f4f7] rounded-2xl p-5 relative shadow-sm cursor-pointer"
+                                    className="bg-[#f6f6f6] text-white p-5 relative cursor-pointer rounded-2xl border border-gray-400 shadow-lg mb-5"
                                   >
 
                                     {/* Menu */}
@@ -440,7 +469,7 @@ export default function LeadPage() {
                                     </div>
 
                                     {/* Card */}
-                                    <h3 className="text-[24px] font-bold text-gray-700">
+                                    <h3 className="text-[18px] font-bold text-gray-700">
                                       {
                                         lead.first_name + " " + lead.last_name
                                       }
