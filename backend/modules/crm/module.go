@@ -23,26 +23,36 @@ func (m *Module) Name() string {
 
 func (m *Module) Init(ctx *module.ModuleContext) error {
 
-	collection := ctx.DB.Collection("crm")
+	db := ctx.DB
 
-	repo := repository.NewRepository(collection)
+	repo := repository.NewRepository(db.Collection("crm"))
 
-	service := service.NewService(repo)
+	svc := service.NewService(repo)
 
-	m.handler = handler.NewHandler(service)
+	m.handler = handler.NewHandler(svc)
 
 	return nil
 }
 
 func (m *Module) RegisterRoutes(r *gin.RouterGroup) {
 
-	r.POST("/", m.handler.Create)
-
 	r.GET("/", m.handler.GetAll)
-
+	r.POST("/", m.handler.Create)
 	r.PUT("/:id", m.handler.Update)
-
 	r.DELETE("/:id", m.handler.Delete)
 
+	// Comment
 	r.POST("/comment", m.handler.AddComment)
+
+	// Checklist
+	r.POST("/checklist", m.handler.AddChecklist)
+	r.GET("/checklist", m.handler.GetAllChecklist)
+
+	// Detail
+	r.POST("/detail", m.handler.AddDetail)
+	r.GET("/detail", m.handler.GetAllDetails)
+
+	// Reminder
+	r.POST("/reminder", m.handler.AddReminder)
+	r.GET("/reminder", m.handler.GetAllReminders)
 }

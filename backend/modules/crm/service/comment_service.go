@@ -15,3 +15,8 @@ func (s *Service) AddComment(req dto.CreateCommentDTO) error {
 
 	return s.repo.AddComment(data)
 }
+
+func (s *Service) GetAllComments() ([]model.Comment, error) {
+
+	return s.repo.GetAllComments()
+}

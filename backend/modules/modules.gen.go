@@ -1,34 +1,17 @@
 package modules
 
 import (
-	"log"
-
 	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/mongo"
 
-	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/core/module"
-	crm "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm"
+	purchase_order "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/purchase_order"
 )
 
-func LoadModules() []module.Module {
-	return []module.Module{
-		crm.NewModule(),
-	}
-}
+func RegisterModules(
+	api *gin.RouterGroup,
+	db *mongo.Database,
+) {
 
-func RegisterModules(r *gin.Engine, ctx *module.ModuleContext) {
-
-	api := r.Group("/api")
-
-	for _, m := range LoadModules() {
-
-		log.Println("🔌 Loading module:", m.Name())
-
-		if err := m.Init(ctx); err != nil {
-			log.Fatalf("❌ Failed to init module %s: %v", m.Name(), err)
-		}
-
-		group := api.Group("/" + m.Name())
-
-		m.RegisterRoutes(group)
-	}
+	// Purchase Order Module
+	purchase_order.RegisterModule(api, db)
 }

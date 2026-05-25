@@ -15,3 +15,8 @@ func (s *Service) AddChecklist(req dto.CreateChecklistDTO) error {
 
 	return s.repo.AddChecklist(data)
 }
+
+func (s *Service) GetAllChecklist() ([]model.Checklist, error) {
+
+	return s.repo.GetAllChecklist()
+}

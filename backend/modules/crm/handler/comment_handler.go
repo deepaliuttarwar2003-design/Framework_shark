@@ -36,3 +36,21 @@ func (h *Handler) AddComment(c *gin.Context) {
 		"message": "Comment added successfully",
 	})
 }
+
+func (h *Handler) GetAllComments(c *gin.Context) {
+
+	data, err := h.service.GetAllComments()
+
+	if err != nil {
+
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"data": data,
+	})
+}
