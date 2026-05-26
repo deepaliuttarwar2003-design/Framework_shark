@@ -6,9 +6,8 @@ import { Provider, useDispatch, useSelector } from "react-redux";
 import { configureStore, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { motion, AnimatePresence } from "framer-motion";
 
-// ========================================================
-// 1. REDUX TOOLKIT STATE SETUP (Internalized for App Router Consistency)
-// ========================================================
+
+// 1. REDUX TOOLKIT STATE SETUP 
 
 interface PurchaseItem {
   id: string;
@@ -65,9 +64,9 @@ const localStore = configureStore({
 
 type RootState = ReturnType<typeof localStore.getState>;
 
-// ========================================================
+
 // 2. CORE WORKSPACE COMPONENT
-// ========================================================
+
 
 function PurchaseEntryForm() {
   const dispatch = useDispatch();
