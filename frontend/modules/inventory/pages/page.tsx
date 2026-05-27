@@ -349,14 +349,14 @@ export default function InventoryPage() {
         <div className="flex justify-end gap-3">
           <button
             onClick={handleCategoryClick}
-            className="bg-blue-500 text-white px-5 py-2 rounded-lg hover:bg-blue-600 font-semibold"
+            className="bg-blue-500 text-white px-5 py-2 rounded-lg hover:bg-green-600 font-semibold"
           >
             + Add Category
           </button>
 
           <button
             onClick={handleAddClick}
-            className="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 font-semibold"
+            className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 font-semibold"
           >
             + Add Product
           </button>

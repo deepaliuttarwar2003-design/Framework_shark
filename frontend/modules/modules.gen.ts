@@ -1,12 +1,9 @@
 // AUTO-GENERATED FILE — DO NOT EDIT
 
-import InventoryModule from "@/modules/inventory"
-
-const inventoryModule = InventoryModule
+import { Project_ManagementModule as project_ManagementModule } from "@/modules/Project_Management"
 
 export function loadModules() {
   return [
-    inventoryModule
+    project_ManagementModule
   ]
 }
-
