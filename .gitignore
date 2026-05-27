@@ -7,3 +7,7 @@ backend/bin/
 
 # Env
 .env
+*.zip
+node_modules
+.next
+*.exe
