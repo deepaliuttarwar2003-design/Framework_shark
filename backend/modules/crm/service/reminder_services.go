@@ -1,23 +1,24 @@
 package service
 
 import (
-	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/dto"
 	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/model"
+	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/repository"
 )
 
-func (s *Service) AddReminder(req dto.CreateReminderDTO) error {
+type ReminderService struct {
+	repo *repository.ReminderRepository
+}
 
-	data := model.Reminder{
-		CRMID:         req.CRMID,
-		ReminderTitle: req.ReminderTitle,
-		ReminderDate:  req.ReminderDate,
-		ReminderTime:  req.ReminderTime,
+func NewReminderService(repo *repository.ReminderRepository) *ReminderService {
+	return &ReminderService{
+		repo: repo,
 	}
+}
 
+func (s *ReminderService) AddReminder(data model.Reminder) error {
 	return s.repo.AddReminder(data)
 }
 
-func (s *Service) GetAllReminders() ([]model.Reminder, error) {
-
+func (s *ReminderService) GetAllReminders() ([]model.Reminder, error) {
 	return s.repo.GetAllReminders()
 }

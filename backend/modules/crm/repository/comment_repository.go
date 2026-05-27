@@ -7,9 +7,20 @@ import (
 	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/model"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func (r *Repository) AddComment(data model.Comment) error {
+type CommentRepository struct {
+	collection *mongo.Collection
+}
+
+func NewCommentRepository(db *mongo.Database) *CommentRepository {
+	return &CommentRepository{
+		collection: db.Collection("comments"),
+	}
+}
+
+func (r *CommentRepository) AddComment(data model.Comment) error {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
@@ -19,7 +30,7 @@ func (r *Repository) AddComment(data model.Comment) error {
 	return err
 }
 
-func (r *Repository) GetAllComments() ([]model.Comment, error) {
+func (r *CommentRepository) GetAllComments() ([]model.Comment, error) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()

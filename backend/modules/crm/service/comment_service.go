@@ -1,22 +1,24 @@
 package service
 
 import (
-	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/dto"
 	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/model"
+	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/repository"
 )
 
-func (s *Service) AddComment(req dto.CreateCommentDTO) error {
+type CommentService struct {
+	repo *repository.CommentRepository
+}
 
-	data := model.Comment{
-		CRMID:   req.CRMID,
-		Message: req.Message,
-		Author:  req.Author,
+func NewCommentService(repo *repository.CommentRepository) *CommentService {
+	return &CommentService{
+		repo: repo,
 	}
+}
 
+func (s *CommentService) AddComment(data model.Comment) error {
 	return s.repo.AddComment(data)
 }
 
-func (s *Service) GetAllComments() ([]model.Comment, error) {
-
+func (s *CommentService) GetAllComments() ([]model.Comment, error) {
 	return s.repo.GetAllComments()
 }

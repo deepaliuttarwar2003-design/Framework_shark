@@ -1,23 +1,24 @@
 package service
 
 import (
-	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/dto"
 	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/model"
+	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/repository"
 )
 
-func (s *Service) AddDetail(req dto.CreateDetailDTO) error {
+type DetailService struct {
+	repo *repository.DetailRepository
+}
 
-	data := model.Detail{
-		CRMID:       req.CRMID,
-		Description: req.Description,
-		Status:      req.Status,
-		Priority:    req.Priority,
+func NewDetailService(repo *repository.DetailRepository) *DetailService {
+	return &DetailService{
+		repo: repo,
 	}
+}
 
+func (s *DetailService) AddDetail(data model.Detail) error {
 	return s.repo.AddDetail(data)
 }
 
-func (s *Service) GetDetail() ([]model.Detail, error) {
-
+func (s *DetailService) GetDetail() ([]model.Detail, error) {
 	return s.repo.GetDetail()
 }

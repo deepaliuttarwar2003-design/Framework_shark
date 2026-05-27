@@ -3,54 +3,57 @@ package handler
 import (
 	"net/http"
 
-	"github.com/gin-gonic/gin"
+	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/model"
+	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/service"
 
-	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/dto"
+	"github.com/gin-gonic/gin"
 )
 
-func (h *Handler) AddChecklist(c *gin.Context) {
+type ChecklistHandler struct {
+	service *service.ChecklistService
+}
 
-	var req dto.CreateChecklistDTO
+func NewChecklistHandler(service *service.ChecklistService) *ChecklistHandler {
+	return &ChecklistHandler{
+		service: service,
+	}
+}
 
-	if err := c.ShouldBindJSON(&req); err != nil {
+func (h *ChecklistHandler) AddChecklist(c *gin.Context) {
 
+	var data model.Checklist
+
+	if err := c.ShouldBindJSON(&data); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
-
 		return
 	}
 
-	err := h.service.AddChecklist(req)
+	err := h.service.AddChecklist(data)
 
 	if err != nil {
-
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
-
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Checklist added successfully",
+		"message": "Checklist Added Successfully",
 	})
 }
 
-func (h *Handler) GetAllChecklist(c *gin.Context) {
+func (h *ChecklistHandler) GetAllChecklist(c *gin.Context) {
 
 	data, err := h.service.GetAllChecklist()
 
 	if err != nil {
-
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
-
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"data": data,
-	})
+	c.JSON(http.StatusOK, data)
 }
