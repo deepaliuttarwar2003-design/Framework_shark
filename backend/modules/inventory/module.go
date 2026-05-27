@@ -51,9 +51,9 @@ func (m *Module) RegisterRoutes(r *gin.RouterGroup) {
 	})
 
 	r.POST("/create",m.handler.Create)
-	r.GET("/getAllData",m.handler.GetAll)
-	r.PUT("/update/:id",m.handler.Update)
-	r.DELETE("/delete/:id",m.handler.Delete)
+	r.GET("/getallproducts",m.handler.GetAll)
+	r.PUT("/updateproduct/:id",m.handler.Update)
+	r.DELETE("/deleteproduct/:id",m.handler.Delete)
 
 	categoryGroup := r.Group("/category")
 	categoryGroup.POST("/createCategory",m.categoryHandler.CreateCategory)

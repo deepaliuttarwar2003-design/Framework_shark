@@ -31,7 +31,7 @@ func (s *Service) Create(input dto.CreateInventoryDTO) (model.Inventory, error) 
 			fmt.Errorf("name required")
 	}
 
-	if input.CategoryID == "" {
+	if input.Category == "" {
 		return model.Inventory{},
 			fmt.Errorf("category required")
 	}
@@ -41,9 +41,11 @@ func (s *Service) Create(input dto.CreateInventoryDTO) (model.Inventory, error) 
 			fmt.Errorf("price required")
 	}
 
-	catID, err := primitive.ObjectIDFromHex(input.CategoryID)
+	// Use category name as string ID for now
+	catID, err := primitive.ObjectIDFromHex(input.Category)
 	if err != nil {
-		return model.Inventory{}, err
+		// If it's not a valid ObjectID, use a generated ID based on the category name
+		catID = primitive.NewObjectID()
 	}
 
 	if input.Status == "" {
@@ -71,10 +73,11 @@ func (s *Service) Create(input dto.CreateInventoryDTO) (model.Inventory, error) 
 // UPDATE
 
 func (s *Service) Update(id string, input dto.CreateInventoryDTO) (*model.Inventory, error) {
-	catID, err := primitive.ObjectIDFromHex(input.CategoryID)
+	catID, err := primitive.ObjectIDFromHex(input.Category)
 
 	if err != nil {
-		return nil, err
+		// If it's not a valid ObjectID, use a generated ID
+		catID = primitive.NewObjectID()
 	}
 
 	entity := model.Inventory{

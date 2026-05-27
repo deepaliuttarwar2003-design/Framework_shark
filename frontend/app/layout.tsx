@@ -2,8 +2,11 @@
 
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+// import { Provider } from "react-redux";
+import ReduxProvider from "./store/provider";
+// import ReduxProvider from "@/s";
 
-import { Provider } from "react-redux";
+// import { Provider } from "react-redux";
 import { store } from "@/app/store";
 
 const geistSans = Geist({
@@ -26,10 +29,31 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} min-h-full flex flex-col antialiased`}
       >
-        <Provider store={store}>
+
+        <ReduxProvider>
+
           {children}
-        </Provider>
+        </ReduxProvider>
       </body>
     </html>
   );
 }
+
+
+// import ReduxProvider from "./store/provider";
+
+// export default function RootLayout({
+//   children,
+// }: {
+//   children: React.ReactNode;
+// }) {
+//   return (
+//     <html lang="en">
+//       <body>
+//         <ReduxProvider>
+//           {children}
+//         </ReduxProvider>
+//       </body>
+//     </html>
+//   );
+// }
