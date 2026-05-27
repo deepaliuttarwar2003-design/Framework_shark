@@ -7,11 +7,34 @@ import (
 
 	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/core/module"
 	crm "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm"
+	health "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/health"
+	inventory "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/inventory"
 )
 
 func LoadModules() []module.Module {
 	return []module.Module{
 		crm.NewModule(),
+		health.NewModule(),
+		inventory.NewModule(),
+	}
+}
+
+func RegisterModuless(r *gin.Engine, ctx *module.ModuleContext) {
+
+	api := r.Group("/api")
+
+	for _, m := range LoadModules() {
+
+		log.Println("🔌 Loading module:", m.Name())
+
+		if err := m.Init(ctx); err != nil {
+			log.Fatalf("❌ Failed to init module %s: %v", m.Name(), err)
+		}
+
+		group := api.Group("/" + m.Name())
+
+		m.RegisterRoutes(group)
+
 	}
 }
 
@@ -28,7 +51,6 @@ func RegisterModules(r *gin.Engine, ctx *module.ModuleContext) {
 		}
 
 		group := api.Group("/" + m.Name())
-
 		m.RegisterRoutes(group)
 	}
 }

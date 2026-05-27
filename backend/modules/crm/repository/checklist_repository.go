@@ -1,0 +1,87 @@
+// package repository
+
+// import (
+// 	"context"
+
+// 	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/model"
+// )
+
+// //
+// // ADD CHECKLIST
+// //
+// func (r *Repository) AddChecklist(data model.Checklist) error {
+
+// 	_, err := r.collection.InsertOne(context.Background(), data)
+
+// 	return err
+// }
+
+// //
+// // GET CHECKLISTS
+// //
+// func (r *Repository) GetChecklists() ([]model.Checklist, error) {
+
+// 	var checklists []model.Checklist
+
+// 	cursor, err := r.collection.Find(context.Background(), map[string]interface{}{})
+
+// 	if err != nil {
+// 		return nil, err
+// 	}
+
+// 	err = cursor.All(context.Background(), &checklists)
+
+// 	if err != nil {
+// 		return nil, err
+// 	}
+
+// 	return checklists, nil
+// }
+
+package repository
+
+import (
+	"context"
+	"time"
+
+	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/model"
+
+	"go.mongodb.org/mongo-driver/bson"
+)
+
+func (r *Repository) AddChecklist(data model.Checklist) error {
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	_, err := r.collection.InsertOne(ctx, data)
+
+	return err
+}
+
+func (r *Repository) GetAllChecklist() ([]model.Checklist, error) {
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	var checklist []model.Checklist
+
+	cursor, err := r.collection.Find(ctx, bson.M{})
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer cursor.Close(ctx)
+
+	for cursor.Next(ctx) {
+
+		var item model.Checklist
+
+		cursor.Decode(&item)
+
+		checklist = append(checklist, item)
+	}
+
+	return checklist, nil
+}

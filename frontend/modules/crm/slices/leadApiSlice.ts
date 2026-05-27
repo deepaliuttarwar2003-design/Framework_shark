@@ -48,7 +48,7 @@ export const leadApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
 
     getLeads: builder.query<Lead[], void>({
-      query: () => "/crm/getall",
+      query: () => "/crm/getall",  
 
       providesTags: ["Lead"],
     }),
@@ -87,7 +87,7 @@ export const leadApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         body: data,
       }),
-
+    
       invalidatesTags: ["Lead"],
     }),
     getComments: builder.query<Lead[], void>({
