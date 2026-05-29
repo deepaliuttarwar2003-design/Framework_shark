@@ -1,19 +1,17 @@
 package crm
 
 import (
+	"github.com/gin-gonic/gin"
+
 	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/core/module"
+
 	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/handler"
 	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/repository"
 	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/service"
-
-	"github.com/gin-gonic/gin"
 )
 
 type Module struct {
-	checklistHandler *handler.ChecklistHandler
-	commentHandler   *handler.CommentHandler
-	detailHandler    *handler.DetailHandler
-	reminderHandler  *handler.ReminderHandler
+	handler *handler.Handler
 }
 
 func NewModule() *Module {
@@ -26,48 +24,34 @@ func (m *Module) Name() string {
 
 func (m *Module) Init(ctx *module.ModuleContext) error {
 
-	db := ctx.DB
+	repo := repository.NewRepository(ctx.DB)
 
-	// Checklist
-	checklistRepo := repository.NewChecklistRepository(db)
-	checklistService := service.NewChecklistService(checklistRepo)
-	m.checklistHandler = handler.NewChecklistHandler(checklistService)
+	services := service.NewService(repo)
 
-	// Comment
-	commentRepo := repository.NewCommentRepository(db)
-	commentService := service.NewCommentService(commentRepo)
-	m.commentHandler = handler.NewCommentHandler(commentService)
-
-	// Detail
-	detailRepo := repository.NewDetailRepository(db)
-	detailService := service.NewDetailService(detailRepo)
-	m.detailHandler = handler.NewDetailHandler(detailService)
-
-	// Reminder
-	reminderRepo := repository.NewReminderRepository(db)
-	reminderService := service.NewReminderService(reminderRepo)
-	m.reminderHandler = handler.NewReminderHandler(reminderService)
+	m.handler = handler.NewHandler(services)
 
 	return nil
 }
 
 func (m *Module) RegisterRoutes(r *gin.RouterGroup) {
 
-	crm := r.Group("/crm")
+	// CRM
+	r.POST("/", m.handler.Create)
+	r.GET("/", m.handler.GetAll)
 
 	// Checklist
-	crm.POST("/checklist", m.checklistHandler.AddChecklist)
-	crm.GET("/checklist", m.checklistHandler.GetAllChecklist)
+	r.POST("/checklist", m.handler.AddChecklist)
+	r.GET("/checklist", m.handler.GetAllChecklist)
 
 	// Comment
-	crm.POST("/comment", m.commentHandler.AddComment)
-	crm.GET("/comment", m.commentHandler.GetAllComments)
+	r.POST("/comment", m.handler.AddComment)
+	r.GET("/comment", m.handler.GetAllComment)
 
 	// Detail
-	crm.POST("/detail", m.detailHandler.AddDetail)
-	crm.GET("/detail", m.detailHandler.GetDetail)
+	r.POST("/detail", m.handler.AddDetail)
+	r.GET("/detail", m.handler.GetAllDetails)
 
 	// Reminder
-	crm.POST("/reminder", m.reminderHandler.AddReminder)
-	crm.GET("/reminder", m.reminderHandler.GetAllReminders)
+	r.POST("/reminder", m.handler.AddReminder)
+	r.GET("/reminder", m.handler.GetAllReminder)
 }

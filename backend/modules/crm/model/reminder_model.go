@@ -1,22 +1,15 @@
 package model
 
-import (
-	"time"
-
-	"go.mongodb.org/mongo-driver/bson/primitive"
-)
+import "go.mongodb.org/mongo-driver/bson/primitive"
 
 type Reminder struct {
 	ID primitive.ObjectID `bson:"_id,omitempty" json:"id"`
 
 	CRMID string `bson:"crm_id" json:"crm_id"`
 
-	ReminderTitle string `bson:"reminder_title" json:"reminder_title"`
+	Title string `bson:"title" json:"title"`
 
-	ReminderDate string `bson:"reminder_date" json:"reminder_date"`
+	Date string `bson:"date" json:"date"`
 
-	ReminderTime string `bson:"reminder_time" json:"reminder_time"`
-
-	CreatedAt time.Time `bson:"created_at" json:"created_at"`
-	UpdatedAt time.Time `bson:"updated_at" json:"updated_at"`
+	Time string `bson:"time" json:"time"`
 }

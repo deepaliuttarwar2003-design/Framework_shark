@@ -11,6 +11,7 @@ type Service struct {
 }
 
 func NewService(repo *repository.Repository) *Service {
+
 	return &Service{
 		repo: repo,
 	}
@@ -43,35 +44,6 @@ func (s *Service) Create(req dto.CreateCrmDTO) (interface{}, error) {
 }
 
 func (s *Service) GetAll() ([]model.Crm, error) {
+
 	return s.repo.GetAll()
-}
-
-func (s *Service) Update(id string, req dto.CreateCrmDTO) error {
-
-	updateData := map[string]interface{}{
-		"lead_title":     req.LeadTitle,
-		"first_name":     req.FirstName,
-		"last_name":      req.LastName,
-		"telephone":      req.Telephone,
-		"email":          req.Email,
-		"lead_value":     req.LeadValue,
-		"notes":          req.Notes,
-		"source":         req.Source,
-		"category":       req.Category,
-		"tags":           req.Tags,
-		"last_contacted": req.LastContacted,
-		"company_name":   req.CompanyName,
-		"street":         req.Street,
-		"city":           req.City,
-		"state":          req.State,
-		"zip_code":       req.ZipCode,
-		"country":        req.Country,
-		"website":        req.Website,
-	}
-
-	return s.repo.Update(id, updateData)
-}
-
-func (s *Service) Delete(id string) error {
-	return s.repo.Delete(id)
 }
