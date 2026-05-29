@@ -1,44 +1,22 @@
 package service
 
 import (
+	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/dto"
 	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/model"
-	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/repository"
 )
 
-type CommentService struct {
-	repo *repository.CommentRepository
-}
+func (s *Service) AddComment(req dto.CreateCommentDTO) error {
 
-func NewCommentService(db *mongo.Database) *CommentService {
-	return &CommentService{
-		repo: repository.NewCommentRepository(db),
+	data := model.Comment{
+		CRMID:   req.CRMID,
+		Message: req.Message,
+		Author:  req.Author,
 	}
-}
 
-
-
-func (s *CommentService) AddComment(data model.Comment) error {
 	return s.repo.AddComment(data)
 }
 
+func (s *Service) GetAllComment() ([]model.Comment, error) {
 
-
-// / CREATE
-// func (r *CategoryRepository) Save(entity model.Category) (model.Category, error) {
-
-// 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-
-// 	defer cancel()
-
-// 	_, err := r.collection.InsertOne(ctx, entity)
-
-// 	if err != nil {
-// 		return model.Category{}, err
-// 	}
-
-// 	return entity, nil
-// }
-
-func (s *CommentService) GetAllComments() ([]model.Comment, error) {
-	return s.repo.GetAllComments()
+	return s.repo.GetAllComment()
 }

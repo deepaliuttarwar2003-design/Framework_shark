@@ -3,57 +3,54 @@ package handler
 import (
 	"net/http"
 
-	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/model"
-	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/service"
-
 	"github.com/gin-gonic/gin"
+
+	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/dto"
 )
 
-type ReminderHandler struct {
-	service *service.ReminderService
-}
+func (h *Handler) AddReminder(c *gin.Context) {
 
-func NewReminderHandler(service *service.ReminderService) *ReminderHandler {
-	return &ReminderHandler{
-		service: service,
-	}
-}
+	var req dto.CreateReminderDTO
 
-func (h *ReminderHandler) AddReminder(c *gin.Context) {
+	if err := c.ShouldBindJSON(&req); err != nil {
 
-	var data model.Reminder
-
-	if err := c.ShouldBindJSON(&data); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
+
 		return
 	}
 
-	err := h.service.AddReminder(data)
+	err := h.service.AddReminder(req)
 
 	if err != nil {
+
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
+
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Reminder Added Successfully",
+		"message": "Reminder added successfully",
 	})
 }
 
-func (h *ReminderHandler) GetAllReminders(c *gin.Context) {
+func (h *Handler) GetAllReminder(c *gin.Context) {
 
-	data, err := h.service.GetAllReminders()
+	data, err := h.service.GetAllReminder()
 
 	if err != nil {
+
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
+
 		return
 	}
 
-	c.JSON(http.StatusOK, data)
+	c.JSON(http.StatusOK, gin.H{
+		"data": data,
+	})
 }

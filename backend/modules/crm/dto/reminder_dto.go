@@ -1,11 +1,11 @@
 package dto
 
 type CreateReminderDTO struct {
-	CRMID string `json:"lead_id"`
+	CRMID string `json:"crm_id"`
 
-	ReminderTitle string `json:"text" validate:"required"`
+	Title string `json:"title"`
 
-	ReminderDate string `json:"date" validate:"required"`
+	Date string `json:"date"`
 
-	ReminderTime string `json:"time" validate:"required"`
+	Time string `json:"time"`
 }

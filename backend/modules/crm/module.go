@@ -1,31 +1,17 @@
 package crm
 
 import (
+	"github.com/gin-gonic/gin"
+
 	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/core/module"
+
 	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/handler"
 	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/repository"
 	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/service"
-
-	"github.com/gin-gonic/gin"
 )
 
-
-func (m *Module) Name() string {
-	return ModuleName
-}
-const ModuleName = "crm"
-
 type Module struct {
-	service *service.Service
-	handler *handler.Handler	
-	checklistService *service.ChecklistService
-	checklistHandler *handler.ChecklistHandler
-	commentService   *service.CommentService
-	commentHandler   *handler.CommentHandler
-	detailHandler    *handler.DetailHandler
-	detailService    *service.DetailService
-	reminderHandler  *handler.ReminderHandler
-	reminderService  *service.ReminderService
+	handler *handler.Handler
 }
 
 func NewModule() *Module {
@@ -33,56 +19,39 @@ func NewModule() *Module {
 }
 
 func (m *Module) Name() string {
-	return ModuleName
+	return "crm"
 }
 
 func (m *Module) Init(ctx *module.ModuleContext) error {
 
-	db := ctx.DB
+	repo := repository.NewRepository(ctx.DB)
 
-	// Checklist
-	checklistRepo := repository.NewChecklistRepository(db)
-	checklistService := service.NewChecklistService(checklistRepo)
-	m.checklistHandler = handler.NewChecklistHandler(checklistService)
+	services := service.NewService(repo)
 
-	// Comment
-	// commentRepo := repository.NewCommentRepository(db)
-	commentService := service.NewCommentService(db)
-	m.commentHandler = handler.NewCommentHandler(commentService)
-
-	// Detail
-	detailRepo := repository.NewDetailRepository(db)
-	detailService := service.NewDetailService(detailRepo)
-	m.detailHandler = handler.NewDetailHandler(detailService)
-
-	// Reminder
-	reminderRepo := repository.NewReminderRepository(db)
-	reminderService := service.NewReminderService(reminderRepo)
-	m.reminderHandler = handler.NewReminderHandler(reminderService)
+	m.handler = handler.NewHandler(services)
 
 	return nil
 }
 
 func (m *Module) RegisterRoutes(r *gin.RouterGroup) {
 
+	// CRM
 	r.POST("/create", m.handler.Create)
-	r.GET("/getall", m.handler.GetAll)
-	r.PUT("/update/:id", m.handler.Update)
-	r.DELETE("/delete/:id", m.handler.Delete)
-
-	// Comment
-	r.POST("/comments", m.commentHandler.AddComment)
-	r.GET("/getallComments", m.commentHandler.GetAllComments)
+	r.GET("/getAll", m.handler.GetAll)
 
 	// Checklist
-	r.POST("/checklists", m.checklistHandler.AddChecklist)
-	r.GET("/getallChecklists", m.checklistHandler.GetAllChecklist)
+	r.POST("/checklist", m.handler.AddChecklist)
+	r.GET("/checklist", m.handler.GetAllChecklist)
+
+	// Comment
+	r.POST("/comment", m.handler.AddComment)
+	r.GET("/comment", m.handler.GetAllComment)
 
 	// Detail
-	r.POST("/descriptions", m.detailHandler.AddDetail)
-	r.GET("/getallDescriptions", m.detailHandler.GetAllDetails)
+	r.POST("/detail", m.handler.AddDetail)
+	r.GET("/detail", m.handler.GetAllDetails)
 
 	// Reminder
-	r.POST("/reminders", m.reminderHandler.AddReminder)
-	r.GET("/getallReminders", m.reminderHandler.GetAllReminders)
+	r.POST("/reminder", m.handler.AddReminder)
+	r.GET("/reminder", m.handler.GetAllReminder)
 }

@@ -2,57 +2,40 @@ package repository
 
 import (
 	"context"
-	"time"
 
 	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/model"
 
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
-type ReminderRepository struct {
-	collection *mongo.Collection
-}
+func (r *Repository) AddReminder(data model.Reminder) error {
 
-func NewReminderRepository(db *mongo.Database) *ReminderRepository {
-	return &ReminderRepository{
-		collection: db.Collection("reminders"),
-	}
-}
+	collection := r.db.Collection("crm_reminders")
 
-func (r *ReminderRepository) AddReminder(data model.Reminder) error {
-
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	_, err := r.collection.InsertOne(ctx, data)
+	_, err := collection.InsertOne(
+		context.Background(),
+		data,
+	)
 
 	return err
 }
 
-func (r *ReminderRepository) GetAllReminders() ([]model.Reminder, error) {
+func (r *Repository) GetAllReminder() ([]model.Reminder, error) {
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
+	collection := r.db.Collection("crm_reminders")
 
-	var reminders []model.Reminder
-
-	cursor, err := r.collection.Find(ctx, bson.M{})
+	cursor, err := collection.Find(
+		context.Background(),
+		bson.M{},
+	)
 
 	if err != nil {
 		return nil, err
 	}
 
-	defer cursor.Close(ctx)
+	var reminders []model.Reminder
 
-	for cursor.Next(ctx) {
+	err = cursor.All(context.Background(), &reminders)
 
-		var reminder model.Reminder
-
-		cursor.Decode(&reminder)
-
-		reminders = append(reminders, reminder)
-	}
-
-	return reminders, nil
+	return reminders, err
 }

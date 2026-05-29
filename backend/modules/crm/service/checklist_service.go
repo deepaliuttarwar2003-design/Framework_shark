@@ -1,24 +1,22 @@
 package service
 
 import (
+	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/dto"
 	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/model"
-	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/repository"
 )
 
-type ChecklistService struct {
-	repo *repository.ChecklistRepository
-}
+func (s *Service) AddChecklist(req dto.CreateChecklistDTO) error {
 
-func NewChecklistService(repo *repository.ChecklistRepository) *ChecklistService {
-	return &ChecklistService{
-		repo: repo,
+	data := model.Checklist{
+		CRMID:     req.CRMID,
+		Title:     req.Title,
+		IsChecked: req.IsChecked,
 	}
-}
 
-func (s *ChecklistService) AddChecklist(data model.Checklist) error {
 	return s.repo.AddChecklist(data)
 }
 
-func (s *ChecklistService) GetAllChecklist() ([]model.Checklist, error) {
+func (s *Service) GetAllChecklist() ([]model.Checklist, error) {
+
 	return s.repo.GetAllChecklist()
 }

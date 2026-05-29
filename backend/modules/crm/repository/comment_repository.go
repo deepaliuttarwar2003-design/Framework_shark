@@ -2,68 +2,40 @@ package repository
 
 import (
 	"context"
-	"time"
 
 	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/model"
 
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
-type CommentRepository struct {
-	collection *mongo.Collection
+func (r *Repository) AddComment(data model.Comment) error {
+
+	collection := r.db.Collection("crm_comments")
+
+	_, err := collection.InsertOne(
+		context.Background(),
+		data,
+	)
+
+	return err
 }
 
-func NewCommentRepository(db *mongo.Database) *CommentRepository {
-	return &CommentRepository{
-		collection: db.Collection("comments"),
-	}
-}
+func (r *Repository) GetAllComment() ([]model.Comment, error) {
 
-func (r *CommentRepository) AddComment(data model.Comment) error {
+	collection := r.db.Collection("crm_comments")
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	// _, err := r.collection.InsertOne(ctx, data)
-
-
-	_, err := r.collection.InsertOne(ctx, entity)
-
-	if err != nil {
-		return model.Comment{}, err
-	}
-
-	return entity, nil
-}
-
-
-
-
-
-func (r *CommentRepository) GetAllComments() ([]model.Comment, error) {
-
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	var comments []model.Comment
-
-	cursor, err := r.collection.Find(ctx, bson.M{})
+	cursor, err := collection.Find(
+		context.Background(),
+		bson.M{},
+	)
 
 	if err != nil {
 		return nil, err
 	}
 
-	defer cursor.Close(ctx)
+	var comments []model.Comment
 
-	for cursor.Next(ctx) {
+	err = cursor.All(context.Background(), &comments)
 
-		var comment model.Comment
-
-		cursor.Decode(&comment)
-
-		comments = append(comments, comment)
-	}
-
-	return comments, nil
+	return comments, err
 }
