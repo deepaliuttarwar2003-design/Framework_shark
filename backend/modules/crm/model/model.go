@@ -1,4 +1,3 @@
-
 package model
 
 import (
@@ -23,14 +22,14 @@ type Crm struct {
 	Tags          []string `bson:"tags" json:"tags"`
 	LastContacted string   `bson:"last_contacted" json:"last_contacted"`
 
-	CompanyName string `bson:"company_name" json:"company_name"`
-	Street      string `bson:"street" json:"street"`
-	City        string `bson:"city" json:"city"`
-	State       string `bson:"state" json:"state"`
-	ZipCode     string `bson:"zip_code" json:"zip_code"`
-	Country     string `bson:"country" json:"country"`
-	Website     string `bson:"website" json:"website"`
-
-	CreatedAt time.Time `bson:"created_at" json:"created_at"`
-	UpdatedAt time.Time `bson:"updated_at" json:"updated_at"`
+	CompanyName string    `bson:"company_name" json:"company_name"`
+	Street      string    `bson:"street" json:"street"`
+	City        string    `bson:"city" json:"city"`
+	State       string    `bson:"state" json:"state"`
+	ZipCode     string    `bson:"zip_code" json:"zip_code"`
+	Country     string    `bson:"country" json:"country"`
+	Website     string    `bson:"website" json:"website"`
+	Stage       string    `bson:"stage" json:"stage"`
+	CreatedAt   time.Time `bson:"created_at" json:"created_at"`
+	UpdatedAt   time.Time `bson:"updated_at" json:"updated_at"`
 }

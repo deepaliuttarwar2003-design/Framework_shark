@@ -272,20 +272,19 @@ export default function LeadPage() {
                   <div className="flex items-center justify-between border-b px-5 py-3">
 
                     <h2
-  className={`text-[23px] font-bold ${
-    stage === "New"
-      ? "text-blue-600"
-      : stage === "Contacted"
-      ? "text-red-600"
-      : stage === "Qualified"
-      ? "text-green-600"
-      : stage === "Disqualified"
-      ? "text-yellow-500"
-      : "text-gray-700"
-  }`}
->
-  {stage}
-</h2>
+                      className={`text-[23px] font-bold ${stage === "New"
+                          ? "text-blue-600"
+                          : stage === "Contacted"
+                            ? "text-red-600"
+                            : stage === "Qualified"
+                              ? "text-green-600"
+                              : stage === "Disqualified"
+                                ? "text-yellow-500"
+                                : "text-gray-700"
+                        }`}
+                    >
+                      {stage}
+                    </h2>
 
                     <button
                       onClick={() => {
@@ -368,8 +367,8 @@ export default function LeadPage() {
                                     {...provided.draggableProps}
                                     {...provided.dragHandleProps}
                                     onClick={() => {
-                                   setSelectedLead(lead);
-                                   setDetailOpen(true);
+                                      setSelectedLead(lead);
+                                      setDetailOpen(true);
                                     }}
                                     className="bg-[#f4f4f7] rounded-2xl p-5 relative shadow-sm cursor-pointer"
                                   >
@@ -519,7 +518,7 @@ export default function LeadPage() {
         onOpenChange={setOpen}
       >
         {/* <DialogContent className="max-w-5xl max-h-[95vh] overflow-y-auto rounded-[30px]"> */}
-<DialogContent className="w-[95vw] max-w-5xl max-h-[95vh] overflow-y-auto rounded-[30px] p-8">
+        <DialogContent className="w-[95vw] max-w-5xl max-h-[95vh] overflow-y-auto rounded-[30px] p-8">
           <DialogHeader>
             <DialogTitle className="text-3xl font-bold text-green-700">
               Create Deals
@@ -527,7 +526,7 @@ export default function LeadPage() {
           </DialogHeader>
 
           {/* <div className="grid grid-cols-2 gap-5 py-4"> */}
-<div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-6 px-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-6 px-2">
             <Input
               placeholder="Lead Title"
               value={formData.lead_title}
@@ -750,21 +749,21 @@ export default function LeadPage() {
       </Dialog>
       {/* Lead Detail Popup */}
       <Dialog
-  open={detailOpen}
-  onOpenChange={setDetailOpen}
->
-  <DialogContent className="overflow-hidden">
+        open={detailOpen}
+        onOpenChange={setDetailOpen}
+      >
+        <DialogContent className="overflow-hidden">
 
-    <DialogHeader className="hidden">
-      <DialogTitle>
-        Lead Details
-      </DialogTitle>
-    </DialogHeader>
+          <DialogHeader className="hidden">
+            <DialogTitle>
+              Lead Details
+            </DialogTitle>
+          </DialogHeader>
 
-    <LeadDetailPage lead={selectedLead} />
+          <LeadDetailPage lead={selectedLead} />
 
-  </DialogContent>
-</Dialog>
+        </DialogContent>
+      </Dialog>
       {/* Floating Button */}
       <button
         onClick={() => {

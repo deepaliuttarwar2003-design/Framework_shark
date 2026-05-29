@@ -1,16 +1,14 @@
+
+
 import { apiSlice } from "@/core/features/apiSlice";
 
 export interface Lead {
   id: string;
 
   lead_title: string;
-
   first_name: string;
-
   last_name: string;
-
   telephone: string;
-
   email: string;
 
   lead_value: number;
@@ -18,7 +16,6 @@ export interface Lead {
   notes: string;
 
   source: string;
-
   category: string;
 
   tags: string[];
@@ -28,13 +25,9 @@ export interface Lead {
   company_name: string;
 
   street: string;
-
   city: string;
-
   state: string;
-
   zip_code: string;
-
   country: string;
 
   website: string;
@@ -44,16 +37,49 @@ export interface Lead {
   created?: string;
 }
 
+export interface Comment {
+  id: string;
+  lead_id: string;
+  text: string;
+  author: string;
+  date?: string;
+}
+
+export interface Checklist {
+  id: string;
+  lead_id: string;
+  text: string;
+  completed: boolean;
+}
+
+export interface Reminder {
+  id: string;
+  lead_id: string;
+  text: string;
+  date: string;
+  time: string;
+}
+
+export interface Description {
+  id: string;
+  lead_id: string;
+  description: string;
+}
+
 export const leadApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
 
-    getLeads: builder.query<Lead[], void>({
-      query: () => "/crm/getall",  
+    // LEADS
 
+    getLeads: builder.query<Lead[], void>({
+      query: () => "/crm/getall",
       providesTags: ["Lead"],
     }),
 
-    createLead: builder.mutation<Lead, Partial<Lead>>({
+    createLead: builder.mutation<
+      Lead,
+      Partial<Lead>
+    >({
       query: (data) => ({
         url: "/crm/create",
         method: "POST",
@@ -63,7 +89,10 @@ export const leadApiSlice = apiSlice.injectEndpoints({
       invalidatesTags: ["Lead"],
     }),
 
-    updateLead: builder.mutation<Lead, Partial<Lead>>({
+    updateLead: builder.mutation<
+      Lead,
+      Partial<Lead>
+    >({
       query: ({ id, ...data }) => ({
         url: `/crm/update/${id}`,
         method: "PUT",
@@ -81,21 +110,41 @@ export const leadApiSlice = apiSlice.injectEndpoints({
 
       invalidatesTags: ["Lead"],
     }),
-      createComment: builder.mutation<Lead, Partial<Lead>>({
+
+    // COMMENTS
+
+    getComments: builder.query<Comment[], void>({
+      query: () => "/crm/getallComments",
+      providesTags: ["Lead"],
+    }),
+
+    createComment: builder.mutation<
+      Comment,
+      Partial<Comment>
+    >({
       query: (data) => ({
         url: "/crm/comments",
         method: "POST",
         body: data,
       }),
-    
+
       invalidatesTags: ["Lead"],
     }),
-    getComments: builder.query<Lead[], void>({
-      query: () => "/crm/getallComments",
 
+    // DESCRIPTIONS
+
+    getDescriptions: builder.query<
+      Description[],
+      void
+    >({
+      query: () => "/crm/getallDescriptions",
       providesTags: ["Lead"],
     }),
-    createDescription: builder.mutation<Lead, Partial<Lead>>({
+
+    createDescription: builder.mutation<
+      Description,
+      Partial<Description>
+    >({
       query: (data) => ({
         url: "/crm/descriptions",
         method: "POST",
@@ -104,7 +153,21 @@ export const leadApiSlice = apiSlice.injectEndpoints({
 
       invalidatesTags: ["Lead"],
     }),
-    createChecklist: builder.mutation<Lead, Partial<Lead>>({
+
+    // CHECKLISTS
+
+    getChecklists: builder.query<
+      Checklist[],
+      void
+    >({
+      query: () => "/crm/getallChecklists",
+      providesTags: ["Lead"],
+    }),
+
+    createChecklist: builder.mutation<
+      Checklist,
+      Partial<Checklist>
+    >({
       query: (data) => ({
         url: "/crm/checklists",
         method: "POST",
@@ -113,7 +176,21 @@ export const leadApiSlice = apiSlice.injectEndpoints({
 
       invalidatesTags: ["Lead"],
     }),
-    createReminder: builder.mutation<Lead, Partial<Lead>>({
+
+    // REMINDERS
+
+    getReminders: builder.query<
+      Reminder[],
+      void
+    >({
+      query: () => "/crm/getallReminders",
+      providesTags: ["Lead"],
+    }),
+
+    createReminder: builder.mutation<
+      Reminder,
+      Partial<Reminder>
+    >({
       query: (data) => ({
         url: "/crm/reminders",
         method: "POST",
@@ -122,36 +199,25 @@ export const leadApiSlice = apiSlice.injectEndpoints({
 
       invalidatesTags: ["Lead"],
     }),
-      getDescriptions: builder.query<Lead[], void>({
-      query: () => "/crm/getallDescriptions",
 
-      providesTags: ["Lead"],
-    }),
-      getChecklists: builder.query<Lead[], void>({
-      query: () => "/crm/getallChecklists",
-
-      providesTags: ["Lead"],
-    }),
-      getReminders: builder.query<Lead[], void>({
-      query: () => "/crm/getallReminders",
-
-      providesTags: ["Lead"],
-    }),
   }),
 });
-
 
 export const {
   useGetLeadsQuery,
   useCreateLeadMutation,
   useUpdateLeadMutation,
   useDeleteLeadMutation,
-  useGetDescriptionsQuery,
+
   useGetCommentsQuery,
   useCreateCommentMutation,
+
+  useGetDescriptionsQuery,
   useCreateDescriptionMutation,
+
   useGetChecklistsQuery,
   useCreateChecklistMutation,
+
   useGetRemindersQuery,
   useCreateReminderMutation,
 } = leadApiSlice;
