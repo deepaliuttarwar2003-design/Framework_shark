@@ -1,7 +1,11 @@
 
 package model
 
-import "go.mongodb.org/mongo-driver/bson/primitive"
+import (
+	"time"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
 
 type Crm struct {
 	ID primitive.ObjectID `bson:"_id,omitempty" json:"id"`
@@ -26,5 +30,7 @@ type Crm struct {
 	ZipCode     string `bson:"zip_code" json:"zip_code"`
 	Country     string `bson:"country" json:"country"`
 	Website     string `bson:"website" json:"website"`
-	Stage     string `bson:"stage" json:"stage"`
+
+	CreatedAt time.Time `bson:"created_at" json:"created_at"`
+	UpdatedAt time.Time `bson:"updated_at" json:"updated_at"`
 }

@@ -1,96 +1,59 @@
-
-// package handler
-
-// import (
-// 	"net/http"
-
-// 	"github.com/gin-gonic/gin"
-
-// 	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/dto"
-// )
-
-// func (h *Handler) AddReminder(c *gin.Context) {
-
-// 	var req dto.CreateReminderDTO
-
-// 	if err := c.ShouldBindJSON(&req); err != nil {
-
-// 		c.JSON(http.StatusBadRequest, gin.H{
-// 			"error": err.Error(),
-// 		})
-
-// 		return
-// 	}
-
-// 	err := h.service.AddReminder(req)
-
-// 	if err != nil {
-
-// 		c.JSON(http.StatusInternalServerError, gin.H{
-// 			"error": err.Error(),
-// 		})
-
-// 		return
-// 	}
-
-// 	c.JSON(http.StatusOK, gin.H{
-// 		"message": "Reminder added successfully",
-// 	})
-// }
-
 package handler
 
 import (
 	"net/http"
 
-	"github.com/gin-gonic/gin"
+	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/model"
+	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/service"
 
-	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/dto"
+	"github.com/gin-gonic/gin"
 )
 
-func (h *Handler) AddReminder(c *gin.Context) {
+type ReminderHandler struct {
+	service *service.ReminderService
+}
 
-	var req dto.CreateReminderDTO
+func NewReminderHandler(service *service.ReminderService) *ReminderHandler {
+	return &ReminderHandler{
+		service: service,
+	}
+}
 
-	if err := c.ShouldBindJSON(&req); err != nil {
+func (h *ReminderHandler) AddReminder(c *gin.Context) {
 
+	var data model.Reminder
+
+	if err := c.ShouldBindJSON(&data); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
-
 		return
 	}
 
-	err := h.service.AddReminder(req)
+	err := h.service.AddReminder(data)
 
 	if err != nil {
-
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
-
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Reminder added successfully",
+		"message": "Reminder Added Successfully",
 	})
 }
 
-func (h *Handler) GetAllReminders(c *gin.Context) {
+func (h *ReminderHandler) GetAllReminders(c *gin.Context) {
 
 	data, err := h.service.GetAllReminders()
 
 	if err != nil {
-
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
-
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"data": data,
-	})
+	c.JSON(http.StatusOK, data)
 }

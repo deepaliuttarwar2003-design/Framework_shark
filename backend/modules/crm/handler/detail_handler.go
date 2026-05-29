@@ -1,93 +1,59 @@
-// package handler
-
-// import (
-// 	"net/http"
-
-// 	"github.com/gin-gonic/gin"
-
-// 	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/dto"
-// )
-
-// func (h *Handler) AddDetail(c *gin.Context) {
-
-// 	var req dto.CreateDetailDTO
-
-// 	if err := c.ShouldBindJSON(&req); err != nil {
-
-// 		c.JSON(http.StatusBadRequest, gin.H{
-// 			"error": err.Error(),
-// 		})
-
-// 		return
-// 	}
-
-// 	err := h.service.AddDetail(req)
-
-// 	if err != nil {
-
-// 		c.JSON(http.StatusInternalServerError, gin.H{
-// 			"error": err.Error(),
-// 		})
-
-// 		return
-// 	}
-
-// 	c.JSON(http.StatusOK, gin.H{
-// 		"message": "Detail added successfully",
-// 	})
-// }
 package handler
 
 import (
 	"net/http"
 
-	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/dto"
+	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/model"
+	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/service"
+
 	"github.com/gin-gonic/gin"
 )
 
-func (h *Handler) AddDetail(c *gin.Context) {
+type DetailHandler struct {
+	service *service.DetailService
+}
 
-	var req dto.CreateDetailDTO
+func NewDetailHandler(service *service.DetailService) *DetailHandler {
+	return &DetailHandler{
+		service: service,
+	}
+}
 
-	if err := c.ShouldBindJSON(&req); err != nil {
+func (h *DetailHandler) AddDetail(c *gin.Context) {
 
+	var data model.Detail
+
+	if err := c.ShouldBindJSON(&data); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
-
 		return
 	}
 
-	err := h.service.AddDetail(req)
+	err := h.service.AddDetail(data)
 
 	if err != nil {
-
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
-
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Detail added successfully",
+		"message": "Detail Added Successfully",
 	})
 }
 
-func (h *Handler) GetAllDetails(c *gin.Context) {
+func (h *DetailHandler) GetDetail(c *gin.Context) {
 
 	data, err := h.service.GetDetail()
 
 	if err != nil {
-
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
-
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"data": data,
-	})
+	c.JSON(http.StatusOK, data)
 }

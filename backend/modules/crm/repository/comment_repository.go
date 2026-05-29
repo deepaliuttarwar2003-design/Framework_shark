@@ -1,18 +1,3 @@
-// package repository
-
-// import (
-// 	"context"
-
-// 	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/model"
-// )
-
-// func (r *Repository) AddComment(data model.Comment) error {
-
-// 	_, err := r.collection.InsertOne(context.Background(), data)
-
-// 	return err
-// }
-
 package repository
 
 import (
@@ -22,19 +7,41 @@ import (
 	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm/model"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func (r *Repository) AddComment(data model.Comment) error {
+type CommentRepository struct {
+	collection *mongo.Collection
+}
+
+func NewCommentRepository(db *mongo.Database) *CommentRepository {
+	return &CommentRepository{
+		collection: db.Collection("comments"),
+	}
+}
+
+func (r *CommentRepository) AddComment(data model.Comment) error {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	_, err := r.collection.InsertOne(ctx, data)
+	// _, err := r.collection.InsertOne(ctx, data)
 
-	return err
+
+	_, err := r.collection.InsertOne(ctx, entity)
+
+	if err != nil {
+		return model.Comment{}, err
+	}
+
+	return entity, nil
 }
 
-func (r *Repository) GetAllComments() ([]model.Comment, error) {
+
+
+
+
+func (r *CommentRepository) GetAllComments() ([]model.Comment, error) {
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
