@@ -91,9 +91,7 @@ export default function ProjectForm({
 
   const status = watch("status");
 
-  const onSubmit = async (
-    data: ProjectFormValues
-  ) => {
+  async function onSubmit(data: ProjectFormValues) {
     try {
       if (initialData?.id) {
         await updateProject({
@@ -110,7 +108,7 @@ export default function ProjectForm({
     } catch (error) {
       console.error(error);
     }
-  };
+  }
 
   return (
     <form

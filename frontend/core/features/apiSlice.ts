@@ -6,9 +6,9 @@ import {
 export const apiSlice = createApi({
   reducerPath: "api",
 
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/api",
-  }),
+    baseQuery: fetchBaseQuery({
+        baseUrl: "http://localhost:8080/api",
+    }),
 
   tagTypes: ["Lead", "Inventory"],
 
