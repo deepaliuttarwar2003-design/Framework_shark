@@ -7,12 +7,14 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/core/module"
+	Project_Management "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/Project_Management"
 	health "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/health"
 	inventory "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/inventory"
 )
 
 func LoadModules() []module.Module {
 	return []module.Module{
+		Project_Management.NewModule(),
 		health.NewModule(),
 		inventory.NewModule(),
 	}

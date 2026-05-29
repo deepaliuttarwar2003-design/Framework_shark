@@ -1,0 +1,1 @@
+export { default } from "@/modules/Project_Management/pages/page"
