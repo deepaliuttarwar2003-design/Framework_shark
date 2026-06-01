@@ -11,7 +11,6 @@ type Service struct {
 }
 
 func NewService(repo *repository.Repository) *Service {
-
 	return &Service{
 		repo: repo,
 	}
@@ -44,6 +43,13 @@ func (s *Service) Create(req dto.CreateCrmDTO) (interface{}, error) {
 }
 
 func (s *Service) GetAll() ([]model.Crm, error) {
-
 	return s.repo.GetAll()
+}
+
+func (s *Service) Update(id string, req dto.UpdateCrmDTO) (*model.Crm, error) {
+	return s.repo.Update(id, req)
+}
+
+func (s *Service) Delete(id string) error {
+	return s.repo.Delete(id)
 }

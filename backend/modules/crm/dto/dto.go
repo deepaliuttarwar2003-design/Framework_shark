@@ -22,3 +22,26 @@ type CreateCrmDTO struct {
 	Country     string `json:"country"`
 	Website     string `json:"website"`
 }
+
+type UpdateCrmDTO struct {
+	LeadTitle string `json:"lead_title"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+	Telephone string `json:"telephone"`
+	Email     string `json:"email"`
+
+	LeadValue     float64  `json:"lead_value"`
+	Notes         string   `json:"notes"`
+	Source        string   `json:"source"`
+	Category      string   `json:"category"`
+	Tags          []string `json:"tags"`
+	LastContacted string   `json:"last_contacted"`
+
+	CompanyName string `json:"company_name"`
+	Street      string `json:"street"`
+	City        string `json:"city"`
+	State       string `json:"state"`
+	ZipCode     string `json:"zip_code"`
+	Country     string `json:"country"`
+	Website     string `json:"website"`
+}

@@ -5,34 +5,43 @@ package modules
 import (
 	"log"
 
+	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/core/module"
 	"github.com/gin-gonic/gin"
 
-	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/core/module"
-
+	// contractmanagement "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/contractmanagement"
+	contractManagements "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/contractManagements"
 	crm "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm"
 	health "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/health"
+
+	// purchase_order "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/purchase_order"
+	purchase_order "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/purchase_order"
 	sales "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/sales"
+	//"github.com/gin-gonic/gin"
 )
 
 func LoadModules() []module.Module {
-
 	return []module.Module{
+		contractManagements.NewModule(),
 		crm.NewModule(),
 		health.NewModule(),
+		purchase_order.NewModule(),
 		sales.NewModule(),
 	}
 }
 
 func RegisterModules(r *gin.Engine, ctx *module.ModuleContext) {
 
+	api := r.Group("/api")
+
 	for _, m := range LoadModules() {
 
-		log.Println("Loading module:", m.Name())
+		log.Println("🔌 Loading module:", m.Name())
 
 		if err := m.Init(ctx); err != nil {
-			log.Fatalf("Failed to init module %s: %v", m.Name(), err)
+			log.Fatalf("❌ Failed to init module %s: %v", m.Name(), err)
 		}
 
-		m.RegisterRoutes(&r.RouterGroup)
+		group := api.Group("/" + m.Name())
+		m.RegisterRoutes(group)
 	}
 }

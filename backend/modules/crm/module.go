@@ -54,4 +54,7 @@ func (m *Module) RegisterRoutes(r *gin.RouterGroup) {
 	// Reminder
 	r.POST("/reminder", m.handler.AddReminder)
 	r.GET("/reminder", m.handler.GetAllReminder)
+
+	r.PUT("/:id", m.handler.Update)
+	r.DELETE("/:id", m.handler.Delete)
 }
