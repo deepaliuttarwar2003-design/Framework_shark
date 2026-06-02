@@ -32,10 +32,12 @@ type UpdateContractRequest struct {
 	Title      string `json:"title"`
 	PartyName  string `json:"party_name"`
 
-	StartDate time.Time `json:"start_date"`
-	EndDate   time.Time `json:"end_date"`
+	StartDate string `json:"start_date"`
+	EndDate   string `json:"end_date"`
 
 	Status string `json:"status"`
+
+	TemplateID string `json:"template_id"`
 
 	Discount float64 `json:"discount"`
 	GST      float64 `json:"gst"`

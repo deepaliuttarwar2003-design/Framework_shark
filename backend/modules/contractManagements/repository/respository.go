@@ -37,6 +37,7 @@ func (r *Repository) FindAll(ctx context.Context) ([]model.ContractManagements, 
 	}
 
 	return contracts, nil
+
 }
 
 func (r *Repository) Create(
@@ -82,4 +83,58 @@ func (r *Repository) Create(
 	}
 
 	return contract, nil
+}
+
+func (r *Repository) GetByID(ctx context.Context, id string) (*model.ContractManagements, error) {
+
+	var contract model.ContractManagements
+
+	err := r.collection.FindOne(
+		ctx,
+		bson.M{"contract_no": id},
+	).Decode(&contract)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &contract, nil
+}
+
+func (r *Repository) Update(
+	ctx context.Context,
+	id string,
+	req *dto.UpdateContractRequest,
+) error {
+
+	update := bson.M{
+		"contract_no": req.ContractNo,
+		"title":       req.Title,
+		"party_name":  req.PartyName,
+		"start_date":  req.StartDate,
+		"end_date":    req.EndDate,
+		"status":      req.Status,
+		"template_id": req.TemplateID,
+		"discount":    req.Discount,
+		"gst":         req.GST,
+		"updated_at":  time.Now(),
+	}
+
+	_, err := r.collection.UpdateOne(
+		ctx,
+		bson.M{"contract_no": id},
+		bson.M{"$set": update},
+	)
+
+	return err
+}
+
+func (r *Repository) Delete(ctx context.Context, id string) error {
+
+	_, err := r.collection.DeleteOne(
+		ctx,
+		bson.M{"contract_no": id},
+	)
+
+	return err
 }

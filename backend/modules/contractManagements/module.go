@@ -41,5 +41,8 @@ func (m *Module) RegisterRoutes(rg *gin.RouterGroup) {
 	{
 		contracts.POST("/create", m.handler.Create)
 		contracts.GET("/all", m.handler.GetAll)
+		contracts.GET("/all/:id", m.handler.GetByID)
+		contracts.PUT("/:id", m.handler.Update)
+		contracts.DELETE("/:id", m.handler.Delete)
 	}
 }
