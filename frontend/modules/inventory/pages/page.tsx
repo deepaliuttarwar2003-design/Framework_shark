@@ -119,7 +119,6 @@ export default function InventoryPage() {
   ) => {
     try {
       await deleteProduct(id).unwrap();
-
       alert("Product Deleted");
     } catch (error) {
       console.log(error);
@@ -141,7 +140,6 @@ export default function InventoryPage() {
       status: product.status,
     });
     setFormMode("edit");
-
     setIsFormOpen(true);
   };
 
@@ -157,43 +155,30 @@ export default function InventoryPage() {
       status: "Inactive",
     });
     setFormMode("add");
-
     setIsFormOpen(true);
   };
 
   /* Close Form */
   const handleCloseForm = () => {
     setIsFormOpen(false);
-
     setEditingProduct(null);
   };
 
   /* Category Modal */
   const handleCategoryClick = () => {
     setNewCategoryName("");
-
-
     setEditingCategoryIndex(null);
-
     setIsCategoryFormOpen(true);
   };
 
   const handleCategorySave = async () => {
-    const trimmed =
-      newCategoryName.trim();
-
+    const trimmed = newCategoryName.trim();
     if (!trimmed) return;
 
     try {
       /* UPDATE CATEGORY */
-      if (
-        editingCategoryIndex !== null
-      ) {
-        const categoryId =
-          categoryData?.[
-            editingCategoryIndex
-          ]?.id;
-
+      if (editingCategoryIndex !== null) {
+        const categoryId = categoryData?.[editingCategoryIndex]?.id;
         if (!categoryId) {
           alert("Category ID missing");
           return;
@@ -206,308 +191,221 @@ export default function InventoryPage() {
 
         setCategories((prev) =>
           prev.map((item, index) =>
-            index ===
-              editingCategoryIndex
-              ? trimmed
-              : item
+            index === editingCategoryIndex ? trimmed : item
           )
         );
 
-        if (
-          category ===
-          categories[
-          editingCategoryIndex
-          ]
-        ) {
+        if (category === categories[editingCategoryIndex]) {
           setCategory(trimmed);
         }
-
         alert("Category Updated");
       }
-
       /* CREATE CATEGORY */
       else {
         await createCategory({
           name: trimmed,
         }).unwrap();
 
-        if (
-          !categories.includes(
-            trimmed
-          )
-        ) {
-          setCategories((prev) => [
-            ...prev,
-            trimmed,
-          ]);
+        if (!categories.includes(trimmed)) {
+          setCategories((prev) => [...prev, trimmed]);
         }
-
         alert("Category Created");
       }
 
       setIsCategoryFormOpen(false);
-
       setNewCategoryName("");
-
-      setEditingCategoryIndex(
-        null
-      );
+      setEditingCategoryIndex(null);
     } catch (error) {
       console.log(error);
-
-      alert(
-        "Failed to save category"
-      );
+      alert("Failed to save category");
     }
   };
+
   /* Edit Category */
-  const handleCategoryEdit = (
-    index: number
-  ) => {
+  const handleCategoryEdit = (index: number) => {
     setEditingCategoryIndex(index);
-
-    setNewCategoryName(
-      categories[index]
-    );
-
+    setNewCategoryName(categories[index]);
     setIsCategoryFormOpen(true);
   };
+
   /* Delete Category */
-  const handleCategoryDelete = async (
-    index: number
-  ) => {
+  const handleCategoryDelete = async (index: number) => {
     try {
-      /* Prevent deleting All */
-      if (categories[index] === "All") {
-        return;
-      }
+      if (categories[index] === "All") return;
 
-      const deleted =
-        categories[index];
-
-      /* API Delete */
-      const categoryId =
-        categoryData?.[index]?.id;
+      const deleted = categories[index];
+      const categoryId = categoryData?.[index]?.id;
 
       if (!categoryId) {
         alert("Category ID missing");
         return;
       }
 
-      await deleteCategory(
-        categoryId
-      ).unwrap();
-      /* Update Local State */
-      setCategories((prev) =>
-        prev.filter(
-          (_, idx) => idx !== index
-        )
-      );
+      await deleteCategory(categoryId).unwrap();
+      setCategories((prev) => prev.filter((_, idx) => idx !== index));
 
-      /* Reset Selected Category */
       if (category === deleted) {
         setCategory("All");
       }
-
       alert("Category Deleted");
     } catch (error) {
       console.log(error);
-
-      alert(
-        "Failed to delete category"
-      );
+      alert("Failed to delete category");
     }
   };
 
   /* Loading */
   if (isLoading) {
     return (
-      <div className="p-10 text-xl font-semibold">
-        Loading Products...
+      <div className="flex min-h-screen items-center justify-center bg--50 text-zinc-950 font-sans antialiased">
+        <div className="text-xl font-medium tracking-tight">Loading inventory...</div>
       </div>
     );
   }
 
-  /* Error */
-  if (error) {
-    console.log(error);
-  }
-
-
   return (
-    <div className="min-h-screen bg-slate-100 p-6">
-      <div className="mx-auto max-w-7xl space-y-6">
-        {/* Header */}
-        <InventoryHeader />
+    // Backdrop wrapper using your custom styling definitions
+    <div className="min-h-screen bg-zinc-400/60 p-4 md:p-8 font-sans antialiased selection:bg-zinc-950/10">
 
-        {/* Stats */}
-        <InventoryStats
-          products={products}
-        />
+      {/* Main dashboard body containers container */}
+      <div className="bg-zinc-50/95 rounded-2xl w-full max-w-7xl h-[92vh] flex flex-col border border-zinc-200/80 overflow-hidden shadow-2xl shadow-zinc-950/5 relative p-6">
+        <div className="flex flex-col h-full space-y-6 overflow-y-auto pr-1">
 
-        {/* Buttons */}
-        <div className="flex justify-end gap-3">
-          <button
-            onClick={handleCategoryClick}
-            className="bg-blue-500 text-white px-5 py-2 rounded-lg hover:bg-green-600 font-semibold"
-          >
-            + Add Category
-          </button>
+          {/* Header */}
+          <InventoryHeader />
 
-          <button
-            onClick={handleAddClick}
-            className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 font-semibold"
-          >
-            + Add Product
-          </button>
-        </div>
+          {/* Stats */}
+          <InventoryStats products={products} />
 
-        {/* Search Filter */}
-        <SearchFilter
-          search={search}
-          setSearch={setSearch}
-          category={category}
-          setCategory={setCategory}
-          categories={categories}
-          setStatus={setStatus}
-          status={status}
-        />
+          {/* Black and White Actions Section */}
+          <div className="flex justify-end gap-3">
+            <button
+              onClick={handleCategoryClick}
+              className="bg-zinc-900 border border-zinc-300 hover:border-zinc-800 text-white px-5 py-2 rounded-lg font-medium text-sm transition-colors duration-200"
+            >
+              + Manage Categories
+            </button>
 
-        {/* Table */}
-        <InventoryTable
-          products={filteredProducts}
-          onDelete={handleDelete}
-          onEdit={handleEdit}
-        />
-
-        {/* Product Form Modal */}
-        {isFormOpen && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl p-6 relative">
-              <button
-                onClick={handleCloseForm}
-                className="absolute top-4 right-4 text-2xl text-gray-500 hover:text-black"
-              >
-                ×
-              </button>
-
-              <ProductForm
-                editingProduct={
-                  editingProduct
-                }
-                clearEdit={
-                  handleCloseForm
-                }
-              />
-            </div>
+            <button
+              onClick={handleAddClick}
+              className="bg-zinc-900 hover:bg-zinc-950 text-white px-6 py-2 rounded-lg font-medium text-sm transition-colors duration-200"
+            >
+              + Add Product
+            </button>
           </div>
-        )}
 
-        {/* Category Modal */}
-        {isCategoryFormOpen && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-2xl font-bold">
-                  Category Manager
-                </h2>
+          {/* Search Filter Component */}
+          <SearchFilter
+            search={search}
+            setSearch={setSearch}
+            category={category}
+            setCategory={setCategory}
+            categories={categories}
+            setStatus={setStatus}
+            status={status}
+          />
 
+          {/* Data Presentation Table */}
+          <div className="flex-1 min-h-0">
+            <InventoryTable
+              products={filteredProducts}
+              onDelete={handleDelete}
+              onEdit={handleEdit}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Product Form Modal (Monochrome Theme) */}
+      {isFormOpen && (
+        <div className="fixed inset-0 bg-zinc-950/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white border border-zinc-200 rounded-xl shadow-xl w-full max-w-2xl p-6 relative">
+            <button
+              onClick={handleCloseForm}
+              className="absolute top-4 right-4 text-xl text-zinc-400 hover:text-zinc-950 transition-colors"
+            >
+              ✕
+            </button>
+            <ProductForm
+              editingProduct={editingProduct}
+              clearEdit={handleCloseForm}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Category Manager Modal (Black & White Theme) */}
+      {isCategoryFormOpen && (
+        <div className="fixed inset-0 bg-zinc-950/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white border border-zinc-200 rounded-xl shadow-xl w-full max-w-md p-6">
+            <div className="flex justify-between items-center mb-5">
+              <h2 className="text-lg font-semibold text-zinc-950 tracking-tight">
+                Category Manager
+              </h2>
+              <button
+                onClick={() => setIsCategoryFormOpen(false)}
+                className="text-xl text-zinc-400 hover:text-zinc-950 transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="space-y-5">
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="New Category Name"
+                  value={newCategoryName}
+                  onChange={(e) => setNewCategoryName(e.target.value)}
+                  className="w-full border border-zinc-200 bg-zinc-50 rounded-lg px-3 py-2 text-sm text-zinc-950 focus:outline-none focus:border-zinc-800 focus:bg-white transition-all"
+                />
                 <button
-                  onClick={() =>
-                    setIsCategoryFormOpen(
-                      false
-                    )
-                  }
-                  className="text-2xl text-gray-500 hover:text-black"
+                  onClick={handleCategorySave}
+                  className="bg-zinc-900 hover:bg-zinc-950 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shrink-0"
                 >
-                  ×
+                  {editingCategoryIndex !== null ? "Update" : "Add"}
                 </button>
               </div>
 
-              <div className="space-y-4">
-                <input
-                  type="text"
-                  placeholder="Category Name"
-                  value={newCategoryName}
-                  onChange={(e) =>
-                    setNewCategoryName(
-                      e.target.value
-                    )
-                  }
-                  className="w-full border rounded-lg px-4 py-2"
-                />
+              <div className="border-t border-zinc-100 pt-4">
+                <h3 className="font-medium text-xs text-zinc-400 uppercase tracking-wider mb-3">
+                  Existing Categories
+                </h3>
 
-                <button
-                  onClick={
-                    handleCategorySave
-                  }
-                  className="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg font-semibold"
-                >
-                  {editingCategoryIndex !==
-                    null
-                    ? "Update Category"
-                    : "Add Category"}
-                </button>
-
-                <div className="border-t pt-4">
-                  <h3 className="font-bold text-lg mb-3">
-                    Existing Categories
-                  </h3>
-
-                  <div className="space-y-2">
-                    {categories
-                      .filter(
-                        (cat) =>
-                          cat !== "All"
-                      )
-                      .map((cat) => {
-                        const actualIndex =
-                          categories.indexOf(
-                            cat
-                          );
-
-                        return (
-                          <div
-                            key={cat}
-                            className="flex items-center justify-between bg-slate-100 p-3 rounded-lg"
-                          >
-                            <span>
-                              {cat}
-                            </span>
-
-                            <div className="flex gap-2">
-                              <button
-                                onClick={() =>
-                                  handleCategoryEdit(
-                                    actualIndex
-                                  )
-                                }
-                                className="bg-blue-500 text-white px-3 py-1 rounded"
-                              >
-                                Edit
-                              </button>
-
-                              <button
-                                onClick={() =>
-                                  handleCategoryDelete(
-                                    actualIndex
-                                  )
-                                }
-                                className="bg-red-500 text-white px-3 py-1 rounded"
-                              >
-                                Delete
-                              </button>
-                            </div>
+                <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1">
+                  {categories
+                    .filter((cat) => cat !== "All")
+                    .map((cat) => {
+                      const actualIndex = categories.indexOf(cat);
+                      return (
+                        <div
+                          key={cat}
+                          className="flex items-center justify-between bg-zinc-50 border border-zinc-100 px-3 py-2 rounded-lg"
+                        >
+                          <span className="text-sm font-medium text-zinc-800">{cat}</span>
+                          <div className="flex gap-1.5">
+                            <button
+                              onClick={() => handleCategoryEdit(actualIndex)}
+                              className="text-xs font-medium text-zinc-600 hover:text-zinc-950 px-2 py-1 rounded hover:bg-zinc-200/60 transition-colors"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => handleCategoryDelete(actualIndex)}
+                              className="text-xs font-medium text-zinc-400 hover:text-red-600 px-2 py-1 rounded hover:bg-red-50 transition-colors"
+                            >
+                              Delete
+                            </button>
                           </div>
-                        );
-                      })}
-                  </div>
+                        </div>
+                      );
+                    })}
                 </div>
               </div>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
