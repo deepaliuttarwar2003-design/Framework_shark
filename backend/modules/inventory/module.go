@@ -37,20 +37,9 @@ func (m *Module) Init(ctx *module.ModuleContext) error {
 
 func (m *Module) RegisterRoutes(r *gin.RouterGroup) {
 
-	r.GET("/", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": ModuleName + " module working 🚀",
-		})
-	})
+	
 
-	r.GET("/health", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"status": "ok",
-			"module": ModuleName,
-		})
-	})
-
-	r.POST("/create",m.handler.Create)
+	r.POST("/createProducts",m.handler.Create)
 	r.GET("/getallproducts",m.handler.GetAll)
 	r.PUT("/updateproduct/:id",m.handler.Update)
 	r.DELETE("/deleteproduct/:id",m.handler.Delete)

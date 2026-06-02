@@ -1,39 +1,26 @@
-
-
 import { apiSlice } from "@/core/features/apiSlice";
 
 export interface Lead {
   id: string;
-
   lead_title: string;
   first_name: string;
   last_name: string;
   telephone: string;
   email: string;
-
   lead_value: number;
-
   notes: string;
-
   source: string;
   category: string;
-
   tags: string[];
-
   last_contacted: string;
-
   company_name: string;
-
   street: string;
   city: string;
   state: string;
   zip_code: string;
   country: string;
-
   website: string;
-
   stage: string;
-
   created?: string;
 }
 
@@ -72,7 +59,7 @@ export const leadApiSlice = apiSlice.injectEndpoints({
     // LEADS
 
     getLeads: builder.query<Lead[], void>({
-      query: () => "/crm/getall",
+      query: () => "/getall",
       providesTags: ["Lead"],
     }),
 
@@ -81,7 +68,7 @@ export const leadApiSlice = apiSlice.injectEndpoints({
       Partial<Lead>
     >({
       query: (data) => ({
-        url: "/crm/create",
+        url: "/create",
         method: "POST",
         body: data,
       }),
@@ -94,7 +81,7 @@ export const leadApiSlice = apiSlice.injectEndpoints({
       Partial<Lead>
     >({
       query: ({ id, ...data }) => ({
-        url: `/crm/update/${id}`,
+        url: `/update/${id}`,
         method: "PUT",
         body: data,
       }),
@@ -104,7 +91,7 @@ export const leadApiSlice = apiSlice.injectEndpoints({
 
     deleteLead: builder.mutation<void, string>({
       query: (id) => ({
-        url: `/crm/leads/${id}`,
+        url: `/delete/${id}`,
         method: "DELETE",
       }),
 
@@ -114,7 +101,7 @@ export const leadApiSlice = apiSlice.injectEndpoints({
     // COMMENTS
 
     getComments: builder.query<Comment[], void>({
-      query: () => "/crm/getallComments",
+      query: () => "/getallComments",
       providesTags: ["Lead"],
     }),
 
@@ -123,7 +110,7 @@ export const leadApiSlice = apiSlice.injectEndpoints({
       Partial<Comment>
     >({
       query: (data) => ({
-        url: "/crm/comments",
+        url: "/comments",
         method: "POST",
         body: data,
       }),
@@ -137,7 +124,7 @@ export const leadApiSlice = apiSlice.injectEndpoints({
       Description[],
       void
     >({
-      query: () => "/crm/getallDescriptions",
+      query: () => "/getallDescriptions",
       providesTags: ["Lead"],
     }),
 
@@ -146,7 +133,7 @@ export const leadApiSlice = apiSlice.injectEndpoints({
       Partial<Description>
     >({
       query: (data) => ({
-        url: "/crm/descriptions",
+        url: "/descriptions",
         method: "POST",
         body: data,
       }),
@@ -160,7 +147,7 @@ export const leadApiSlice = apiSlice.injectEndpoints({
       Checklist[],
       void
     >({
-      query: () => "/crm/getallChecklists",
+      query: () => "/getallChecklists",
       providesTags: ["Lead"],
     }),
 
@@ -169,7 +156,7 @@ export const leadApiSlice = apiSlice.injectEndpoints({
       Partial<Checklist>
     >({
       query: (data) => ({
-        url: "/crm/checklists",
+        url: "/checklists",
         method: "POST",
         body: data,
       }),
@@ -183,7 +170,7 @@ export const leadApiSlice = apiSlice.injectEndpoints({
       Reminder[],
       void
     >({
-      query: () => "/crm/getallReminders",
+      query: () => "/getallReminders",
       providesTags: ["Lead"],
     }),
 
@@ -192,7 +179,7 @@ export const leadApiSlice = apiSlice.injectEndpoints({
       Partial<Reminder>
     >({
       query: (data) => ({
-        url: "/crm/reminders",
+        url: "/reminders",
         method: "POST",
         body: data,
       }),

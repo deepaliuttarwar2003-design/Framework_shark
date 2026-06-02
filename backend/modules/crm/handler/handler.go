@@ -66,3 +66,56 @@ func (h *Handler) GetAll(c *gin.Context) {
 		"data": data,
 	})
 }
+
+
+
+func (h *Handler) Update(c *gin.Context) {
+
+	id := c.Param("id")
+
+	var req dto.UpdateCrmDTO
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+
+		return
+	}
+
+	data, err := h.service.Update(id, req)
+
+	if err != nil {
+
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"data": data,
+	})
+}
+
+func (h *Handler) Delete(c *gin.Context) {
+
+	id := c.Param("id")
+
+	err := h.service.Delete(id)
+
+	if err != nil {
+
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "CRM deleted successfully",
+	})
+}

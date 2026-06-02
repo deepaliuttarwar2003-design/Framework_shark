@@ -3,7 +3,7 @@ package repository
 import (
 	"context"
 
-	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/purchase_order/model"
+	// "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/purchase_order/model"
 
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -19,7 +19,7 @@ func NewRepository(db *mongo.Database) *Repository {
 	}
 }
 
-func (r *Repository) Create(po *model.PurchaseOrder) error {
+func (r *Repository) Create(po *model) error {
 
 	_, err := r.collection.InsertOne(
 		context.Background(),

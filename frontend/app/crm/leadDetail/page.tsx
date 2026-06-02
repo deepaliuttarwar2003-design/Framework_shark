@@ -70,24 +70,37 @@ export default function LeadDetailsModal({
   const [createChecklist] = useCreateChecklistMutation();
   const [createDescription] = useCreateDescriptionMutation();
   const [createReminder] = useCreateReminderMutation();
-
-  const { data: commentsData } = useGetCommentsQuery();
-  const { data: checklistData } = useGetChecklistsQuery();
-  const { data: descriptionData } = useGetDescriptionsQuery();
-  const { data: reminderData } = useGetRemindersQuery();
+  const { data: commentsData = [] } = useGetCommentsQuery();
+  const { data: checklistData = [] } = useGetChecklistsQuery();
+  const { data: descriptionData = [] } = useGetDescriptionsQuery();
+  const { data: reminderData = [] } = useGetRemindersQuery();
+  // const { data: reminderData } = useGetRemindersQuery();
   console.log(commentsData);
   React.useEffect(() => {
-    if (commentsData) {
-      setComments(commentsData);
+    if (commentsData?.data) {
+      setComments(commentsData.data);
     }
   }, [commentsData]);
+  console.log(comments);
+  React.useEffect(() => {
+    if (checklistData?.data) {
+      setChecklists(checklistData.data);
+    }
+  }, [checklistData]);
+  console.log(checklists);
 
   React.useEffect(() => {
-    if (reminderData) {
-      setSavedReminders(reminderData);
+    if (reminderData?.data) {
+      setSavedReminders(reminderData.data);
     }
   }, [reminderData]);
-
+console.log(reminderData);
+  React.useEffect(() => {
+    if (descriptionData?.data) {
+setSavedDescriptions(descriptionData?.data || []);
+    }
+  }, [descriptionData]);
+  console.log(descriptionData);
   const handleSaveDescription = async () => {
     if (!description.trim()) return;
 
@@ -301,11 +314,10 @@ export default function LeadDetailsModal({
                       <div className="space-y-3 pt-2">
                         {savedDescriptions.map((item) => (
                           <div key={item.id} className="border border-zinc-200 rounded-xl p-4 bg-white space-y-3 shadow-none">
-                            <p className="text-sm text-zinc-700">{item.text}</p>
-                            <div className="flex gap-2 justify-end border-t border-zinc-100 pt-3">
+                            <p className="text-sm text-zinc-700">{item.description}</p>                            <div className="flex gap-2 justify-end border-t border-zinc-100 pt-3">
                               <Button
                                 variant="link"
-                                onClick={() => handleEditDescription(item.text)}
+                                onClick={() => handleEditDescription(item.description)}
                                 className="h-6 text-zinc-600 hover:text-zinc-950 text-xs font-bold cursor-pointer"
                               >
                                 Edit
@@ -344,11 +356,11 @@ export default function LeadDetailsModal({
                           >
                             <Checkbox
                               id={`check-${item.id}`}
-                              checked={item.completed}
+                              checked={item.is_checked}
                               onCheckedChange={(checked) => {
                                 setChecklists(
                                   checklists.map((c: any) =>
-                                    c.id === item.id ? { ...c, completed: !!checked } : c
+                                    c.id === item.id ? { ...c, is_checked: !!checked } : c
                                   )
                                 );
                               }}
@@ -358,10 +370,10 @@ export default function LeadDetailsModal({
                               htmlFor={`check-${item.id}`}
                               className={cn(
                                 "text-sm font-medium cursor-pointer transition-all select-none",
-                                item.completed ? "line-through text-zinc-400" : "text-zinc-950"
+                                item.is_checked ? "line-through text-zinc-400" : "text-zinc-950"
                               )}
                             >
-                              {item.text}
+                              {item.title}
                             </label>
                           </div>
                         ))
@@ -410,9 +422,15 @@ export default function LeadDetailsModal({
                             <div className="space-y-1">
                               <div className="flex items-baseline gap-2">
                                 <h3 className="font-bold text-xs text-zinc-950">{comment.author}</h3>
-                                <span className="text-zinc-400 text-[10px]">{comment.date}</span>
+                                <span className="text-zinc-400 text-[10px]">
+                                  {new Date(comment.created_at).toLocaleDateString("en-IN", {
+                                    day: "numeric",
+                                    month: "short",
+                                    year: "numeric",
+                                  })}
+                                </span>
                               </div>
-                              <p className="text-zinc-600 text-sm leading-relaxed">{comment.text}</p>
+                              <p className="text-zinc-600 text-sm leading-relaxed">{comment.message}</p>
                             </div>
                           </div>
                         ))
@@ -630,7 +648,7 @@ export default function LeadDetailsModal({
                       <div key={item.id} className="bg-zinc-50 border border-zinc-200 rounded-lg p-3 flex items-start gap-2.5 shadow-none">
                         <div className="w-1.5 h-1.5 rounded-full bg-zinc-950 mt-1.5 shrink-0"></div>
                         <div className="min-w-0">
-                          <p className="font-bold text-xs text-zinc-950 truncate">{item.text}</p>
+                          <p className="font-bold text-xs text-zinc-950 truncate">{item.title}</p>
                           <p className="text-[10px] font-medium text-zinc-400 mt-0.5">
                             {item.date} at {item.time}
                           </p>

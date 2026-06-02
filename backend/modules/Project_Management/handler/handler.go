@@ -19,7 +19,14 @@ func NewHandler(service *service.Service) *Handler {
 
 func (h *Handler) GetAll(c *gin.Context) {
 
-	data := h.service.GetAll()
+	data,err := h.service.GetAll()
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"data": data,
@@ -37,7 +44,64 @@ func (h *Handler) Create(c *gin.Context) {
 		return
 	}
 
-	result := h.service.Create(input)
+	result,err := h.service.Create(input)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
 
 	c.JSON(http.StatusOK, result)
 }
+
+
+func(h *Handler) Update(c *gin.Context){
+	id := c.Param("id")
+
+	var input dto.CreateProjectManagementDTO
+
+	if err := c.ShouldBindJSON(&input); err != nil{
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	} 
+
+	result, err := h.service.Update(id, input)
+	if err != nil{
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":err.Error(),
+		})
+		return
+	}
+
+
+	if result == nil{
+		c.JSON(http.StatusNotFound, gin.H{
+			"error":"not found",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK,result)
+}
+
+
+func(h *Handler) Delete(c *gin.Context){
+	id := c.Param("id")
+
+	err := h.service.Delete(id)
+	if err != nil{
+		c.JSON(http.StatusNotFound,gin.H{
+			"error":"not found",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK,gin.H{
+		"message":"Account deleted successfully",
+	})
+}
+

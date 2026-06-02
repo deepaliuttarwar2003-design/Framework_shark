@@ -3,7 +3,7 @@ package dto
 type CreateReminderDTO struct {
 	CRMID string `json:"crm_id"`
 
-	Title string `json:"title"`
+	Title string `json:"text"`
 
 	Date string `json:"date"`
 

@@ -25,14 +25,13 @@ func LoadModules() []module.Module {
 	return []module.Module{
 
 		crm.NewModule(),
-
-		Project_Management.NewModule(),
 		health.NewModule(),
 		inventory.NewModule(),
+		Project_Management.NewModule(),
 	}
 }
 
-func RegisterModuless(r *gin.Engine, ctx *module.ModuleContext) {
+func RegisterModules(r *gin.Engine, ctx *module.ModuleContext) {
 
 	api := r.Group("/api")
 
@@ -51,34 +50,3 @@ func RegisterModuless(r *gin.Engine, ctx *module.ModuleContext) {
 	}
 }
 
-// func RegisterModules(r *gin.Engine, ctx *module.ModuleContext) {
-
-// 	for _, m := range LoadModules() {
-
-// 		log.Println("🔌 Loading module: - modules.gen.go:24", m.Name())
-
-// 		if err := m.Init(ctx); err != nil {
-// 			log.Fatalf("Failed to init module %s: %v", m.Name(), err)
-// 		}
-
-// 		group := api.Group("/" + m.Name())
-// 		m.RegisterRoutes(group)
-// 	}
-// }
-
-// func RegisterModules(r *gin.Engine, ctx *module.ModuleContext) {
-
-// 	api := r.Group("/api")
-
-// 	for _, m := range LoadModules() {
-
-// 		log.Println("🔌 Loading module:", m.Name())
-
-// 		if err := m.Init(ctx); err != nil {
-// 			log.Fatalf("❌ Failed to init module %s: %v", m.Name(), err)
-// 		}
-
-// 		group := api.Group("/" + m.Name())
-// 		m.RegisterRoutes(group)
-// 	}
-// }

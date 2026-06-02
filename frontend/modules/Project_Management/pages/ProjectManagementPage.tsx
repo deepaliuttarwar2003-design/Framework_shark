@@ -1,7 +1,10 @@
 "use client";
 import { useState } from "react";
 
-import { useGetProjectsQuery, useDeleteProjectMutation } from "../Api/ProjectApi";
+import {
+  useGetProjectsQuery,
+  useDeleteProjectMutation,
+} from "../Redux/projectManagementApiSlice";
 
 import DashboardStats from "../Components/DashboardStats";
 import ProjectTable from "../Components/ProjectTable";
@@ -20,7 +23,6 @@ import { Button } from "@/components/ui/button";
 
 export default function ProjectManagementPage() {
   const { data = [], isLoading } = useGetProjectsQuery();
-
   const [deleteProject] = useDeleteProjectMutation();
 
   const [open, setOpen] = useState(false);

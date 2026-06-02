@@ -1,31 +1,15 @@
 import { z } from "zod";
 
 export const projectSchema = z.object({
-    title: z.string().min(2, "Title is required"),
-
-    description: z
-        .string()
-        .min(5, "Description is required"),
-
-    client: z.string().min(2),
-
-    manager: z.string().min(2),
-
-    startDate: z.string(),
-
-    endDate: z.string(),
-
-    budget: z.coerce
-        .number()
-        .min(1, "Budget is required"),
-
-    status: z.enum([
-        "Planning",
-        "In Progress",
-        "Completed",
-        "On Hold",
-    ]),
+  projectName: z.string().min(1, "Project name is required"),      // ✅ FIXED
+  description: z.string().min(1, "Description is required"),
+  clientName: z.string().min(1, "Client name is required"),        // ✅ FIXED
+  teamLead: z.string().min(1, "Team lead is required"),            // ✅ FIXED
+  startDate: z.string().min(1, "Start date is required"),
+  endDate: z.string().min(1, "End date is required"),
+  budget: z.number().min(0, "Budget must be a positive number"),
+  status: z.enum(["Planning", "In Progress", "Completed", "On Hold"]),
+  priority: z.enum(["Low", "Medium", "High", "Critical"]),         // ✅ ADDED
 });
 
-export type ProjectFormValues =
-    z.infer<typeof projectSchema>;
+export type ProjectFormValues = z.infer<typeof projectSchema>;

@@ -1,13 +1,18 @@
 package Project_Management
 
 import (
-	"github.com/gin-gonic/gin"
 	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/core/module"
+	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/Project_Management/service"
+	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/Project_Management/handler"
+	"github.com/gin-gonic/gin"
 )
 
 const ModuleName = "Project_Management"
 
-type Module struct{}
+type Module struct{
+	service *service.Service
+	handler *handler.Handler
+}
 
 func NewModule() *Module {
 	return &Module{}
@@ -18,23 +23,20 @@ func (m *Module) Name() string {
 }
 
 func (m *Module) Init(ctx *module.ModuleContext) error {
+	m.service = service.NewService(ctx.DB)
+	m.handler = handler.NewHandler(m.service)
 	return nil
 }
 
 func (m *Module) RegisterRoutes(r *gin.RouterGroup) {
 
-	r.GET("/", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": ModuleName + " module working 🚀",
-		})
-	})
+	
+    println("=== PROJECT MANAGEMENT CRUD REGISTERED ===")
 
-	r.GET("/health", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"status": "ok",
-			"module": ModuleName,
-		})
-	})
+	r.POST("/createProject",m.handler.Create)
+	r.GET("/getProject",m.handler.GetAll)
+	r.PUT("/updateProject/:id",m.handler.Update)
+	r.DELETE("/deleteProject/:id",m.handler.Delete)
 }
 
 // compile-time safety

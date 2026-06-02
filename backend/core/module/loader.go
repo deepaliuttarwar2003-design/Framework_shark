@@ -32,14 +32,13 @@ func (l *Loader) InitAll(ctx *ModuleContext) {
 
 func (l *Loader) SetupRoutes(r *gin.Engine) {
 
-	// 🔥 THIS WAS MISSING
 	api := r.Group("/api")
 
 	for _, m := range l.modules {
 
 		log.Println("🚀 Registering routes for:", m.Name())
 
-		group := api.Group("/" + m.Name())
+		group := api
 
 		m.RegisterRoutes(group)
 	}

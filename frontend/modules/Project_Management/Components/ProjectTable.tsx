@@ -17,11 +17,13 @@ import StatusBadge from "./StatusBadge";
 
 export interface Project {
     id: number;
-    title: string;
+    projectTitle: string;
     client: string;
     manager: string;
     budget: number;
     status: string;
+    lead: string;
+    priority: string;
 }
 
 interface Props {
@@ -37,22 +39,24 @@ export default function ProjectTable({
     onEdit,
     onDelete,
 }: Props) {
+
+
     return (
         <div className="rounded-xl border overflow-hidden bg-white">
             <Table>
                 <TableHeader>
                     <TableRow>
-                        <TableHead>Project</TableHead>
+                        <TableHead>Project Name</TableHead>
 
-                        <TableHead>Client</TableHead>
+                        <TableHead>Client Name</TableHead>
 
                         <TableHead>Manager</TableHead>
 
-                        <TableHead>Status</TableHead>
-
                         <TableHead>Budget</TableHead>
 
-                        <TableHead>Actions</TableHead>
+                        <TableHead>Status</TableHead>
+
+
                     </TableRow>
                 </TableHeader>
 
@@ -60,7 +64,7 @@ export default function ProjectTable({
                     {projects.map((project) => (
                         <TableRow key={project.id}>
                             <TableCell>
-                                {project.title}
+                                {project.projectTitle}
                             </TableCell>
 
                             <TableCell>
@@ -73,12 +77,12 @@ export default function ProjectTable({
 
                             <TableCell>
                                 <StatusBadge
-                                    status={project.status}
+                                    status={project.budget}
                                 />
                             </TableCell>
 
                             <TableCell>
-                                ₹ {project.budget}
+                                ₹ {project.status}
                             </TableCell>
 
                             <TableCell>

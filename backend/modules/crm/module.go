@@ -38,7 +38,8 @@ func (m *Module) RegisterRoutes(r *gin.RouterGroup) {
 	// CRM
 	r.POST("/create", m.handler.Create)
 	r.GET("/getall", m.handler.GetAll)
-
+    r.PUT("/update/:id", m.handler.Update)
+	r.DELETE("/delete/:id",m.handler.Delete)
 	// Checklist
 	r.POST("/checklists", m.handler.AddChecklist)
 	r.GET("/getallChecklists", m.handler.GetAllChecklist)
@@ -54,4 +55,5 @@ func (m *Module) RegisterRoutes(r *gin.RouterGroup) {
 	// Reminder
 	r.POST("/reminders", m.handler.AddReminder)
 	r.GET("/getallReminders", m.handler.GetAllReminder)
+
 }

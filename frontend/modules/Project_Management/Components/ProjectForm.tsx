@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { useForm, useWatch, SubmitHandler } from "react-hook-form";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -10,11 +10,11 @@ import {
   projectSchema,
   ProjectFormValues,
 } from "../schema/projectSchema";
-
-import {
-  useCreateProjectMutation,
-  useUpdateProjectMutation,
-} from "../Api/ProjectApi";
+import {useCreateProjectMutation,useUpdateProjectMutation} from "../Redux/projectManagementApiSlice";
+// import {
+//   useCreateProjectMutation,
+//   u
+// } from "../Api/ProjectApi";
 
 import { Button } from "@/components/ui/button";
 
@@ -46,52 +46,36 @@ export default function ProjectForm({
   const [updateProject] =
     useUpdateProjectMutation();
 
-  const form =
-    useForm<ProjectFormValues>({
-      resolver:
-        zodResolver(projectSchema) as any,
+  const form = useForm<ProjectFormValues>({
+  resolver: zodResolver(projectSchema),
+  defaultValues: {
+    projectName: initialData?.projectName || "",      // ✅ FIXED
+    description: initialData?.description || "",
+    clientName: initialData?.clientName || "",        // ✅ FIXED
+    teamLead: initialData?.teamLead || "",            // ✅ FIXED
+    startDate: initialData?.startDate || "",
+    endDate: initialData?.endDate || "",
+    budget: (initialData?.budget || 0) as number,
+    status: initialData?.status ?? "Planning",
+    priority: initialData?.priority || "Medium",      // ✅ ADDED
+  },
+});
 
-      defaultValues: {
-        title:
-          initialData?.title || "",
+  const { register, handleSubmit, setValue, control, formState: { errors } } = form;
 
-        description:
-          initialData?.description ||
-          "",
+  const status = useWatch({
+  control,
+  name: "status",
+});
 
-        client:
-          initialData?.client || "",
+const priority = useWatch({
+  control,
+  name: "priority",
+});
 
-        manager:
-          initialData?.manager || "",
-
-        startDate:
-          initialData?.startDate ||
-          "",
-
-        endDate:
-          initialData?.endDate || "",
-
-        budget:
-          initialData?.budget || 0,
-
-        status:
-          initialData?.status ||
-          "Planning",
-      },
-    });
-
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    watch,
-    formState: { errors },
-  } = form;
-
-  const status = watch("status");
-
-  async function onSubmit(data: ProjectFormValues) {
+  const onSubmit: SubmitHandler<ProjectFormValues> = async (
+    data: ProjectFormValues
+  ) => {
     try {
       if (initialData?.id) {
         await updateProject({
@@ -99,7 +83,7 @@ export default function ProjectForm({
           data,
         }).unwrap();
       } else {
-        await createProject(
+       await createProject(
           data
         ).unwrap();
       }
@@ -108,7 +92,7 @@ export default function ProjectForm({
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   return (
     <form
@@ -119,12 +103,12 @@ export default function ProjectForm({
       <div>
         <Input
           placeholder="Project Title"
-          {...register("title")}
+          {...register("projectName")}
         />
 
-        {errors.title && (
+        {errors.projectName && (
           <p className="text-sm text-red-500 mt-1">
-            {errors.title.message}
+            {errors.projectName.message}
           </p>
         )}
       </div>
@@ -152,12 +136,12 @@ export default function ProjectForm({
       <div>
         <Input
           placeholder="Client"
-          {...register("client")}
+          {...register("clientName")}
         />
 
-        {errors.client && (
+        {errors.clientName && (
           <p className="text-sm text-red-500 mt-1">
-            {errors.client.message}
+            {errors.clientName.message}
           </p>
         )}
       </div>
@@ -166,13 +150,13 @@ export default function ProjectForm({
       <div>
         <Input
           placeholder="Manager"
-          {...register("manager")}
+          {...register("teamLead")}
         />
 
-        {errors.manager && (
+        {errors.teamLead && (
           <p className="text-sm text-red-500 mt-1">
             {
-              errors.manager
+              errors.teamLead
                 .message
             }
           </p>
@@ -216,36 +200,79 @@ export default function ProjectForm({
       </div>
 
       {/* Budget */}
-      <div>
-        <Input
-          type="number"
-          placeholder="Budget"
-          {...register("budget")}
-        />
+<div>
+  <Input
+    type="number"
+    placeholder="Budget"
+    {...register("budget", {
+      valueAsNumber: true,
+    })}
+  />
 
-        {errors.budget && (
-          <p className="text-sm text-red-500 mt-1">
-            {
-              errors.budget
-                .message
-            }
-          </p>
-        )}
-      </div>
+  {errors.budget && (
+    <p className="text-sm text-red-500 mt-1">
+      {
+        errors.budget
+          .message
+      }
+    </p>
+  )}
+</div>
 
-      {/* Status */}
-      <div>
-        <Select
-          value={status}
-          onValueChange={(
-            value
-          ) =>
-            setValue(
-              "status",
-              value as ProjectFormValues["status"]
-            )
-          }
-        >
+{/* Priority */}
+<div>
+  <Select
+    value={priority}
+    onValueChange={(
+      value
+    ) =>
+      setValue(
+        "priority",
+        value as ProjectFormValues["priority"]
+      )
+    }
+  >
+    <SelectTrigger>
+      <SelectValue placeholder="Select Priority" />
+    </SelectTrigger>
+
+    <SelectContent>
+      <SelectItem value="Low">
+        Low
+      </SelectItem>
+
+      <SelectItem value="Medium">
+        Medium
+      </SelectItem>
+
+      <SelectItem value="High">
+        High
+      </SelectItem>
+
+      <SelectItem value="Critical">
+        Critical
+      </SelectItem>
+    </SelectContent>
+  </Select>
+
+  {errors.priority && (
+    <p className="text-sm text-red-500 mt-1">
+      {errors.priority.message}
+    </p>
+  )}
+</div>
+
+{/* Status */}
+<div>
+<Select
+  value={status}
+  onValueChange={(value) =>
+    setValue(
+      "status",
+      value as ProjectFormValues["status"]
+    )
+  }
+>
           <SelectTrigger>
             <SelectValue placeholder="Select Status" />
           </SelectTrigger>
