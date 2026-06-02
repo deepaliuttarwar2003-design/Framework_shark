@@ -79,3 +79,129 @@ func (s *PurchaseOrderService) GetAll() (
 ) {
 	return s.repo.GetAll()
 }
+
+
+func (s *PurchaseOrderService) GetByID(id string) (
+	*model.PurchaseOrder,
+	error,
+) {
+	return s.repo.GetByID(id)
+}
+
+func (s *PurchaseOrderService) Update(
+	id string,
+	req dto.UpdatePurchaseOrderRequest,
+) error {
+
+	order, err := s.repo.GetByID(id)
+
+	if err != nil {
+		return err
+	}
+
+	order.SupplierName = req.SupplierName
+	order.CompanyName = req.CompanyName
+	order.SupplierContact = req.SupplierContact
+	order.SupplierAddress = req.SupplierAddress
+	order.GSTIN = req.GSTIN
+
+	order.Status = req.Status
+
+	var total float64
+
+	var items []model.PurchaseOrderItem
+
+	for _, item := range req.Items {
+
+		total += item.Total
+
+		items = append(items, model.PurchaseOrderItem{
+			ProductName: item.ProductName,
+			Quantity:    item.Quantity,
+			Price:       item.Price,
+			Total:       item.Total,
+		})
+
+	}
+
+	order.Items = items
+
+	order.GrandTotal = total
+
+	order.UpdatedAt = time.Now()
+
+	return s.repo.Update(id, order)
+}
+
+func (s *PurchaseOrderService) Delete(id string) error {
+	return s.repo.Delete(id)
+}			
+
+func (r *Repository) GetAll() ([]model.PurchaseOrder, error) {
+
+	var orders []model.PurchaseOrder
+
+	cursor, err := r.collection.Find(
+		context.Background(),
+		map[string]interface{}{},
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer cursor.Close(context.Background())
+
+	for cursor.Next(context.Background()) {
+
+		var order model.PurchaseOrder
+
+		cursor.Decode(&order)
+
+		orders = append(orders, order)
+	}
+
+	return orders, nil
+}
+
+func (r *Repository) GetByID(id string) (*model.PurchaseOrder, error) {
+
+	var order model.PurchaseOrder
+
+	err := r.collection.FindOne(
+		context.Background(),
+		map[string]interface{}{
+			"id": id,
+		},
+	).Decode(&order)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &order, nil
+}
+
+func (r *Repository) Update(id string, po *model.PurchaseOrder) error {
+
+	_, err := r.collection.UpdateOne(
+		context.Background(),
+		map[string]interface{}{
+			"id": id,
+		},
+		map[string]interface{}{
+			"$set": po,
+		},
+	)
+
+	return err
+}
+
+func (r *Repository) Delete(id string) error {
+
+	_, err := r.collection.DeleteOne(
+		context.Background(),
+		map[string]interface{}{
+			"id": id,
+		},
+	)

@@ -55,3 +55,46 @@ func (r *Repository) GetAll() ([]model.PurchaseOrder, error) {
 
 	return orders, nil
 }
+
+func (r *Repository) GetByID(id string) (*model.PurchaseOrder, error) {
+
+	var order model.PurchaseOrder
+
+	err := r.collection.FindOne(
+		context.Background(),
+		map[string]interface{}{
+			"id": id,
+		},
+	).Decode(&order)
+
+	if err != nil {
+		return nil, err
+	}
+}
+
+func (r *Repository) Update(id string, po *model.PurchaseOrder) error {
+
+	_, err := r.collection.UpdateOne(
+		context.Background(),
+		map[string]interface{}{
+			"id": id,
+		},
+		map[string]interface{}{
+			"$set": po,
+		},
+	)
+
+	return err
+}
+
+func (r *Repository) Delete(id string) error {
+
+	_, err := r.collection.DeleteOne(
+		context.Background(),
+		map[string]interface{}{
+			"id": id,
+		},
+	)
+
+	return err
+}
