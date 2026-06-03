@@ -40,6 +40,7 @@ func (m *Module) RegisterRoutes(r *gin.RouterGroup) {
 	r.GET("/getall", m.handler.GetAll)
     r.PUT("/update/:id", m.handler.Update)
 	r.DELETE("/delete/:id",m.handler.Delete)
+	
 	// Checklist
 	r.POST("/checklists", m.handler.AddChecklist)
 	r.GET("/getallChecklists", m.handler.GetAllChecklist)

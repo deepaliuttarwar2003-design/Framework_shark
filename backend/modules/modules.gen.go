@@ -7,27 +7,27 @@ package modules
 import (
 	"log"
 
+	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/core/module"
 	"github.com/gin-gonic/gin"
 
-
-	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/core/module"
 
 	crm "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm"
 	health "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/health"
 	inventory "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/inventory"
 	Project_Management "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/Project_Management"
+	sales "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/sales"
 	
 
 )
 
 func LoadModules() []module.Module {
-
 	return []module.Module{
 
 		crm.NewModule(),
 		health.NewModule(),
 		inventory.NewModule(),
 		Project_Management.NewModule(),
+		sales.NewModule(),
 	}
 }
 
