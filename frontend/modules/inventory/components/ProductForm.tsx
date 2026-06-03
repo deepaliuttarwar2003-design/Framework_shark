@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import {
     useCreateProductMutation,
     useUpdateProductMutation,
-    // useGetCategoryQuery,
+    useGetCategoryQuery,
     Product,
 } from "../Slices/InventoryApiSlice";
 
@@ -22,44 +22,38 @@ interface ProductFormProps {
 
     clearEdit?: () => void;
 }
+interface Category {
+  categoryname: string;
+}
 
 export default function ProductForm({
     editingProduct,
     clearEdit,
 }: ProductFormProps) {
-    //     const { data: categoryResponse } =
-    //   useGetCategoryQuery();
+        const { data: categoryResponse } =
+      useGetCategoryQuery();
 
-    // const categories: Category[] =
-    //   Array.isArray(categoryResponse?.data)
-    //     ? categoryResponse.data
-    //     : [];
-    /* RTK Query */
+     const categories: Category[] =
+      Array.isArray(categoryResponse?.data)
+         ? categoryResponse.data
+       : [];
+
+    //  RTK Query 
+
     const [createProduct] =
         useCreateProductMutation();
 
     const [updateProduct] =
         useUpdateProductMutation();
 
-    /* Categories */
-    const categories = [
-        "Electronics",
-        "Accessories",
-        "Books",
-        "Clothing",
-        "Furniture",
-        "Toys",
-        "Groceries",
-        "Jewelry",
-    ];
-
-    /* Form State */
+    
     const [formData, setFormData] =
         useState<Product>({
             id: 0,
             name: "",
             sku: "",
             category: "",
+            categoryID: "",
             stock: 0,
             price: 0,
             status: "In Stock",
@@ -227,26 +221,34 @@ export default function ProductForm({
                         </label>
 
                         <select
-                            name="category"
-                            value={formData.category}
-                            onChange={handleChange}
-                            className="w-full border rounded-2xl py-3 px-4 focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition"
-                            required
-                        >
-                            <option value="">
-                                Select Category
-                            </option>
+              value={formData.categoryID}
+              onChange={(e) => {
+              const selected = categories.find(
+              (cat) => cat.id === e.target.value
+         );
 
-                            {categories.map(
-                                (category, index) => (
-                                    <option
-                                        key={index}
-                                        value={category}
-                                    >
-                                        {category}
-                                    </option>
-                                )
-                            )}
+         setFormData((prev) => ({
+        ...prev,
+        category: selected?.categoryname || "",
+        categoryID: selected?.id || "",
+      }));
+     }}
+      className="w-full border rounded-2xl py-3 px-4"
+      required
+>
+          <option value="">
+          Select Category
+         </option>
+
+                 {categories.map((cat) => (
+                  <option
+                  key={cat.id}
+                 value={cat.id}
+  >
+                      {cat.categoryname}
+                      </option>
+                       ))}
+                  
                         </select>
                     </div>
 

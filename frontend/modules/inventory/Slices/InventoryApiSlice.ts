@@ -2,17 +2,11 @@ import { apiSlice } from "@/core/features/apiSlice";
 
 export interface Product {
     id?: number;
-
     name: string;
-
     sku: string;
-
     category: string;
-
     stock: number;
-
     price: number;
-
     status: string;
 }
 
@@ -36,7 +30,7 @@ export const inventoryApiSlice =
                 Partial<Product>
             >({
                 query: (data) => ({
-                    url: "/create",
+                    url: "/createProducts",
                     method: "POST",
                     body: data,
                 }),

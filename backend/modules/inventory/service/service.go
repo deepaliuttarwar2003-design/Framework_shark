@@ -40,12 +40,10 @@ func (s *Service) Create(input dto.CreateInventoryDTO) (model.Inventory, error) 
 		return model.Inventory{},
 			fmt.Errorf("price required")
 	}
-
-	// Use category name as string ID for now
-	catID, err := primitive.ObjectIDFromHex(input.Category)
+	catID, err := primitive.ObjectIDFromHex(input.CategoryID)
 	if err != nil {
-		// If it's not a valid ObjectID, use a generated ID based on the category name
-		catID = primitive.NewObjectID()
+		return model.Inventory{},
+			fmt.Errorf("invalid category id")
 	}
 
 	if input.Status == "" {
@@ -61,6 +59,9 @@ func (s *Service) Create(input dto.CreateInventoryDTO) (model.Inventory, error) 
 		CategoryID: catID,
 		Status:     input.Status,
 	}
+
+	fmt.Printf("Input: %+v\n", input)
+	fmt.Printf("CategoryID: %s\n", input.CategoryID)
 
 	result, err := s.repo.Create(entity)
 	if err != nil {

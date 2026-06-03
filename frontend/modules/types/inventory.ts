@@ -6,4 +6,5 @@ export interface Product {
     stock: number;
     price: number;
     status: string;
+    categoryID: string;
 }

@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-
+fmt "fmt"
 	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/inventory/service"
 	dto "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/inventory/dto"
 )
@@ -43,7 +43,7 @@ func (h *Handler) Create(c *gin.Context) {
 		})
 		return
 	}
-
+fmt.Printf("Received input: %+v\n", input)
 	result, err := h.service.Create(input)
 
 	if err != nil {
