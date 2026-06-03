@@ -42,12 +42,12 @@ import {
 
 type LeadDetailsModalProps = {
   lead: any;
-  onClose: () => void;
+  onCloseAction: () => void;
 };
 
 export default function LeadDetailsModal({
   lead,
-  onClose,
+  onCloseAction,
 }: LeadDetailsModalProps) {
   const [activeTab, setActiveTab] = useState("Lead");
 
@@ -65,7 +65,6 @@ export default function LeadDetailsModal({
   const [description, setDescription] = useState(lead?.notes || "");
   const [savedReminders, setSavedReminders] = useState<any[]>([]);
   const [savedDescriptions, setSavedDescriptions] = useState<any[]>([]);
-
   const [createComment] = useCreateCommentMutation();
   const [createChecklist] = useCreateChecklistMutation();
   const [createDescription] = useCreateDescriptionMutation();
@@ -295,7 +294,6 @@ setSavedDescriptions(descriptionData?.data || []);
                       )}
                     </div>
                   </CardHeader>
-
                   <CardContent className="p-6 space-y-4">
                     {isEditingDescription ? (
                       <Textarea
