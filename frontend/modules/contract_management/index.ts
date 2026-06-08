@@ -1,15 +1,15 @@
 import { AppModule } from "@/core/module"
 
-export const ContractManagementModule: AppModule = {
-  name: "contract_management",
+export const ContractModule: AppModule = {
+  name: "contract",
 
   menu: {
-    label: "ContractManagement",
-    path: "/contract_management",
+    label: "Contract",
+    path: "/contract",
   },
 
   permissions: {
-    read: "contract_management.read",
-    write: "contract_management.write",
+    read: "contract.read",
+    write: "contract.write",
   },
 }

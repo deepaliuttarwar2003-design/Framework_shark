@@ -1,6 +1,8 @@
 /// <reference types="react" />
 // Use native <img> to avoid missing next/image types in some environments
 
+import Link from "next/link";
+
 export default function Home() {
   const features = [
     { title: 'Internal Workflows', desc: 'Optimized for Sharkweb teams.' },
@@ -55,9 +57,9 @@ export default function Home() {
 
           {/* Action Buttons */}
           <div className="flex flex-col gap-4 pt-8 sm:flex-row">
-            <a href="#" className="flex h-12 items-center justify-center rounded-xl bg-zinc-950 px-10 text-xs font-bold text-white transition-all hover:bg-blue-600 hover:shadow-xl hover:shadow-blue-500/20 active:scale-95 dark:bg-zinc-100 dark:text-black">
-              INITIALIZE SESSION
-            </a>
+            <Link href="/contract" className="flex h-12 items-center justify-center rounded-xl bg-blue-600 px-10 text-xs font-bold text-white transition-all hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-500/20 active:scale-95">
+              Open Contract Table
+            </Link>
             <a href="#" className="flex h-12 items-center justify-center rounded-xl border border-zinc-200 px-8 text-xs font-bold text-zinc-500 transition-all hover:border-zinc-950 hover:text-zinc-950 dark:border-zinc-800 dark:hover:border-zinc-100 dark:hover:text-zinc-100">
               CLI DOCUMENTATION
             </a>

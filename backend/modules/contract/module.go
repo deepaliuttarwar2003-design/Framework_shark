@@ -1,11 +1,11 @@
-package contract_management
+package contract
 
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/core/module"
 )
 
-const ModuleName = "contract_management"
+const ModuleName = "contract"
 
 type Module struct{}
 
@@ -35,8 +35,6 @@ func (m *Module) RegisterRoutes(r *gin.RouterGroup) {
 			"module": ModuleName,
 		})
 	})
-
-	RegisterContractManagementRoutes(r)
 }
 
 // compile-time safety
