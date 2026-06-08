@@ -11,7 +11,8 @@ type ContractItem struct {
 }
 
 type ContractManagements struct {
-	ID string `bson:"id,omitempty" json:"id"`
+	
+	ID string `bson:"_id,omitempty" json:"id"`
 
 	ContractNo string `bson:"contract_no" json:"contract_no"`
 	Title      string `bson:"title" json:"title"`

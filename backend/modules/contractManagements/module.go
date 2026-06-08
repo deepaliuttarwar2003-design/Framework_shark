@@ -39,8 +39,8 @@ func (m *Module) RegisterRoutes(rg *gin.RouterGroup) {
 
 	contracts := rg.Group("/contracts")
 	{
-		contracts.POST("/create", m.handler.Create)
-		contracts.GET("/all", m.handler.GetAll)
+		contracts.POST("/createcontract", m.handler.Create)
+		contracts.GET("/allcontract", m.handler.GetAll)
 		contracts.GET("/all/:id", m.handler.GetByID)
 		contracts.PUT("/:id", m.handler.Update)
 		contracts.DELETE("/:id", m.handler.Delete)

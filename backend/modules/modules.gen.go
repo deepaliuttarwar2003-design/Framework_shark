@@ -13,7 +13,7 @@ import (
 	estimate "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/estimate"
 	health "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/health"
 	inventory "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/inventory"
-	// purchase_order "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/purchase_order"
+	purchase_order "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/purchase_order"
 	sales "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/sales"
 )
 
@@ -25,7 +25,7 @@ func LoadModules() []module.Module {
 		estimate.NewModule(),
 		health.NewModule(),
 		inventory.NewModule(),
-		// purchase_order.NewModule(),
+		purchase_order.NewModule(),
 		sales.NewModule(),
 	}
 }

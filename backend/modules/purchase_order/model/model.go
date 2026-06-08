@@ -1,6 +1,10 @@
 package model
 
-import "time"
+import (
+	"time"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
 
 type PurchaseOrderItem struct {
 	ProductName string  `bson:"product_name" json:"product_name"`
@@ -10,10 +14,9 @@ type PurchaseOrderItem struct {
 }
 
 type PurchaseOrder struct {
-	ID string `bson:"_id,omitempty" json:"id"`
 
+	 ID primitive.ObjectID `json:"id" bson:"_id,omitempty"`
 	PONumber string `bson:"po_number" json:"po_number"`
-
 	SupplierName    string `bson:"supplier_name" json:"supplier_name"`
 	CompanyName     string `bson:"company_name" json:"company_name"`
 	SupplierContact string `bson:"supplier_contact" json:"supplier_contact"`

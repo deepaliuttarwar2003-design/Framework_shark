@@ -3,6 +3,7 @@ package contractmanagement
 import "time"
 
 type ContractItemRequest struct {
+	
 	Description string  `json:"description"`
 	Qty         int     `json:"qty"`
 	Unit        string  `json:"unit"`
@@ -11,7 +12,9 @@ type ContractItemRequest struct {
 }
 
 type CreateContractRequest struct {
-	ContractNo string `json:"contract_no"`
+
+   
+    ContractNo string `json:"contract_no"`
 	Title      string `json:"title"`
 	PartyName  string `json:"party_name"`
 

@@ -100,7 +100,7 @@ export default function Home() {
 
                 {/* Card 2: POS Dashboard Link */}
                 <Link
-                  href="/crm/pos"
+                  href="purchase_order"
                   className="group block rounded-[28px] p-8 bg-[#f2f1ed] border border-dashed border-[#cbc9c2] text-left transition-all duration-300 shadow-[inset_0_1px_2px_rgba(255,255,255,0.6),0_4px_12px_rgba(0,0,0,0.02)] hover:border-solid hover:bg-[#ebeae5] hover:shadow-[inset_0_2px_4px_rgba(0,0,0,0.04)]"
                 >
                   {/* Soft Custom Icon Representation */}
@@ -110,14 +110,14 @@ export default function Home() {
 
                   <div className="flex justify-between items-baseline">
                     <h2 className={`${playfair.className} text-2xl font-bold text-[#3a3834]`}>
-                      POS Entry
+                      Purchase Order
                     </h2>
                     <span className="text-[#a3a09a] font-mono text-xs tracking-wider group-hover:translate-x-0.5 transition-transform">
                       →
                     </span>
                   </div>
                   <p className="text-[#8c8881] text-xs mt-1 font-medium tracking-wide">
-                    Open CRM POS Purchase Dashboard
+                    Open CRM Purchase Order Dashboard
                   </p>
                 </Link>
 

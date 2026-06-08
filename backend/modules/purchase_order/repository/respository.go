@@ -2,7 +2,8 @@ package repository
 
 import (
 	"context"
-
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/bson"
 	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/purchase_order/model"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -19,16 +20,22 @@ func NewRepository(db *mongo.Database) *Repository {
 	}
 }
 
+
 func (r *Repository) Create(po *model.PurchaseOrder) error {
 
-	_, err := r.collection.InsertOne(
-		context.Background(),
-		po,
-	)
+    result, err := r.collection.InsertOne(
+        context.Background(),
+        po,
+    )
 
-	return err
+    if err != nil {
+        return err
+    }
+
+    po.ID = result.InsertedID.(primitive.ObjectID)
+
+    return nil
 }
-
 func (r *Repository) GetAll() ([]model.PurchaseOrder, error) {
 
 	var orders []model.PurchaseOrder
@@ -62,9 +69,7 @@ func (r *Repository) GetByID(id string) (*model.PurchaseOrder, error) {
 
 	err := r.collection.FindOne(
 		context.Background(),
-		map[string]interface{}{
-			"id": id,
-		},
+		bson.M{"_id": objID},
 	).Decode(&order)
 
 	if err != nil {
@@ -77,12 +82,8 @@ func (r *Repository) Update(id string, po *model.PurchaseOrder) error {
 
 	_, err := r.collection.UpdateOne(
 		context.Background(),
-		map[string]interface{}{
-			"id": id,
-		},
-		map[string]interface{}{
-			"$set": po,
-		},
+		bson.M{"_id": objID},
+		bson.M{"$set": po},
 	)
 
 	return err
@@ -92,9 +93,7 @@ func (r *Repository) Delete(id string) error {
 
 	_, err := r.collection.DeleteOne(
 		context.Background(),
-		map[string]interface{}{
-			"id": id,
-		},
+		bson.M{"_id": objID},
 	)
 
 	return err

@@ -1,76 +1,524 @@
-'use client'
+"use client";
 
-import { useEffect, useState } from "react";
+import React, { useState } from "react";
+import Link from "next/link";
 
-// Define a simple interface for better type safety
-interface Item {
-  id: string | number;
-  name: string;
-  description?: string;
+import { Provider, useDispatch, useSelector } from "react-redux";
+import {useCreateSalesMutation,useGetSalesQuery} from "../slice/salesapislice";
+import { motion, AnimatePresence } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Inter } from "next/font/google";
+
+const inter = Inter({
+  subsets: ["latin"],
+});
+
+
+
+interface SalesItem {
+  id: string;
+  product_name: string;
+  quantity: number;
+  price: number;
+  total: number;
 }
 
-export default function SalesPage() {
-  const [data, setData] = useState<Item[]>([]);
-  const [loading, setLoading] = useState(true);
+interface SalesState {
+  customerName: string;
+  customerContact: string;
+  customerAddress: string;
+  payment_method: string;
+  payment_status: string;
+  gstin: string;
+  items: SalesItem[];
+}
 
-  useEffect(() => {
-    fetch("/api/sales")
-      .then(res => res.json())
-      .then(res => {
-        setData(res.data);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
-  }, []);
+// ========================================================
+// MAIN COMPONENT
+// ========================================================
+
+function SalesEntryForm() {
+  const dispatch = useDispatch();
+const {data: sales, isLoading: salesLoading} = useGetSalesQuery();
+  const [createSales, { isLoading }] =
+    useCreateSalesMutation();
+
+  
+  const [inputName, setInputName] =
+    useState("");
+
+  const [inputQty, setInputQty] =
+    useState<number>(1);
+
+  const [inputPrice, setInputPrice] =
+    useState<string>("");
+
+const [formData, setFormData] = useState<SalesState>({
+  customerName: "",
+  customerContact: "",
+  customerAddress: "",
+  payment_method: "",
+  payment_status: "",
+  gstin: "",
+  items: [],
+});
+const {
+  customerName,
+  customerContact,
+  customerAddress,
+  payment_method,
+  payment_status,
+  gstin,
+  items,
+} = formData;
+
+const handleFieldChange = (
+  field: keyof SalesState,
+  value: string
+) => {
+  setFormData((prev) => ({
+    ...prev,
+    [field]: value,
+  }));
+};
+
+  const handleAddItemSubmit = (
+    e: React.FormEvent
+  ) => {
+    e.preventDefault();
+
+    if (!inputName.trim()) {
+      alert("Please enter product name.");
+      return;
+    }
+
+    const priceNum = parseFloat(inputPrice);
+
+    if (isNaN(priceNum) || priceNum < 0) {
+      alert("Please enter valid price.");
+      return;
+    }
+
+    if (inputQty <= 0) {
+      alert("Quantity must be at least 1.");
+      return;
+    }
+    
+    const newItem: SalesItem = {
+      id: crypto.randomUUID(),
+
+      product_name: inputName.trim(),
+
+      quantity: inputQty,
+
+      price: priceNum,
+
+      total: inputQty * priceNum,
+    };
+
+setFormData((prev) => ({
+  ...prev,
+  items: [...prev.items, newItem],
+}));
+
+    setFormData(....)
+
+    setInputName("");
+    setInputQty(1);
+    setInputPrice("");
+  };
+  
+
+  const grandTotal = items.reduce(
+    (acc, current) => acc + current.total,
+    0
+  );
+
+  // ========================================================
+  // SAVE SALES ENTRY
+  // ========================================================
+
+  const handleSaveSalesEntry = async () => {
+    if (
+      !customerName.trim() ||
+      !customerContact.trim()
+    ) {
+      alert(
+        "Please fill all required customer fields."
+      );
+
+      return;
+    }
+
+    if (items.length === 0) {
+      alert("Please add at least one item.");
+
+      return;
+    }
+  };
+
+    try {
+   const response = await createSales(
+    formData
+   ).unwrap();
+
+      console.log("Sales Saved:", response);
+
+      alert("Sales invoice saved successfully!");
+
+      // dispatch(resetForm());
+
+    } catch (error) {
+      console.error(error);
+
+      alert("Failed to save sales entry.");
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-black text-slate-200 font-sans p-8">
-      {/* Header Section */}
-      <header className="max-w-5xl mx-auto border-b border-blue-900/50 pb-6 mb-10">
-        <h1 className="text-4xl font-bold tracking-tight text-white">
-          Sales <span className="text-blue-500">Module</span>
-        </h1>
-        <p className="text-slate-500 mt-2">Management and overview of system entities.</p>
-      </header>
+    <div
+      className={`${inter.className} min-h-screen bg-[#f5f5f7] p-4 md:p-8 text-zinc-900`}
+    >
+      <motion.div
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{
+          duration: 0.4,
+          ease: "easeOut",
+        }}
+        className="max-w-4xl mx-auto bg-white rounded-[24px] border border-zinc-200 overflow-hidden shadow-sm"
+      >
+        {/* HEADER */}
 
-      <main className="max-w-5xl mx-auto">
-        {loading ? (
-          <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+        <div className="bg-emerald-800 text-white px-6 py-4 flex justify-between items-center">
+          <Link
+            href="/"
+            className="text-sm hover:underline"
+          >
+            ← Back to Dashboard
+          </Link>
+       
+          <span className="text-xs bg-emerald-900 px-3 py-1 rounded-full">
+            Billing Module
+          </span>
+        </div>
+
+        {/* CONTENT */}
+
+        <div className="p-6 md:p-10 space-y-8">
+
+          {/* TITLE */}
+
+          <div>
+            <h1 className="text-3xl font-extrabold">
+              Sales Register Entry
+            </h1>
+
+            <p className="text-sm text-zinc-500 mt-1">
+              Generate outbound invoices.
+            </p>
           </div>
-        ) : (
-          <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-            {data.map((item) => (
-              <div 
-                key={item.id} 
-                className="group relative bg-slate-900/40 border border-slate-800 p-6 rounded-xl transition-all duration-300 hover:border-blue-600/50 hover:bg-slate-900"
+
+          {/* CUSTOMER DETAILS */}
+
+          <div className="space-y-4">
+            <h3 className="text-xs font-bold uppercase text-zinc-400 border-b pb-2">
+              Customer Details
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+              <input
+                type="text"
+                value={customerName}
+                onChange={(e) =>
+                  handleFieldChange(
+                    "customerName",
+                    e.target.value
+                  )
+                }
+                placeholder="Customer Name"
+                className="w-full h-10 border rounded-lg px-3 text-sm"
+              />
+
+              <input
+                type="text"
+                value={customerContact}
+                onChange={(e) =>
+                  handleFieldChange(
+                    "customerContact",
+                    e.target.value
+                  )
+                }
+                placeholder="Customer Contact"
+                className="w-full h-10 border rounded-lg px-3 text-sm"
+              />
+
+              <textarea
+                value={customerAddress}
+                onChange={(e) =>
+                  handleFieldChange(
+                    "customerAddress",
+                    e.target.value
+                  )
+                }
+                placeholder="Customer Address"
+                className="w-full h-20 border rounded-lg p-3 text-sm md:col-span-2"
+              />
+
+              <input
+                type="text"
+                value={gstin}
+                onChange={(e) =>
+                  handleFieldChange(
+                    "gstin",
+                    e.target.value
+                  )
+                }
+                placeholder="Customer GSTIN"
+                className="w-full h-10 border rounded-lg px-3 text-sm md:col-span-2"
+              />
+            </div>
+          </div>
+
+          {/* ADD ITEMS */}
+
+          <div className="space-y-4">
+
+            <h3 className="text-xs font-bold uppercase text-zinc-400 border-b pb-2">
+              Products
+            </h3>
+
+            <form
+              onSubmit={handleAddItemSubmit}
+              className="grid grid-cols-12 gap-2 bg-zinc-50 p-3 rounded-xl border"
+            >
+              <input
+                type="text"
+                value={inputName}
+                onChange={(e) =>
+                  setInputName(e.target.value)
+                }
+                placeholder="Product Name"
+                className="col-span-12 md:col-span-5 h-10 border rounded-lg px-3 text-sm"
+              />
+
+              <input
+                type="number"
+                value={inputQty}
+                onChange={(e) =>
+                  setInputQty(
+                    parseInt(e.target.value) || 0
+                  )
+                }
+                placeholder="Qty"
+                className="col-span-4 md:col-span-2 h-10 border rounded-lg px-3 text-sm"
+              />
+
+              <input
+                type="number"
+                value={inputPrice}
+                onChange={(e) =>
+                  setInputPrice(e.target.value)
+                }
+                placeholder="Price"
+                className="col-span-5 md:col-span-3 h-10 border rounded-lg px-3 text-sm"
+              />
+
+              <Button
+                type="submit"
+                className="col-span-3 md:col-span-2 h-10 bg-emerald-800 hover:bg-emerald-900"
               >
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-xs font-mono text-blue-400 uppercase tracking-widest">ID: {item.id}</span>
-                  <div className="h-2 w-2 rounded-full bg-blue-500 shadow-[0_0_8px_#3b82f6]"></div>
-                </div>
-                
-                <h2 className="text-xl font-semibold text-white group-hover:text-blue-400 transition-colors">
-                  {item.name}
-                </h2>
-                
-                <div className="mt-4 flex items-center text-sm text-slate-400 italic">
-                  View details 
-                  <svg className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                  </svg>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+                Add
+              </Button>
+            </form>
 
-        {!loading && data.length === 0 && (
-          <div className="text-center py-20 border-2 border-dashed border-slate-800 rounded-2xl">
-            <p className="text-slate-500">No records found in this module.</p>
+            {/* TABLE */}
+
+            <div className="border rounded-xl overflow-hidden">
+              <table className="w-full">
+                <thead>
+                  <tr className="bg-zinc-100 text-xs uppercase">
+                    <th className="p-3">
+                      Product
+                    </th>
+
+                    <th className="p-3">
+                      Qty
+                    </th>
+
+                    <th className="p-3">
+                      Price
+                    </th>
+
+                    <th className="p-3">
+                      Total
+                    </th>
+
+                    <th className="p-3">
+                      Action
+                    </th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <AnimatePresence>
+
+                    {items.length === 0 ? (
+                      <tr>
+                        <td
+                          colSpan={5}
+                          className="p-10 text-center text-zinc-400"
+                        >
+                          No items added
+                        </td>
+                      </tr>
+                    ) : (
+                      items.map((item) => (
+                        <motion.tr
+                          key={item.id}
+                          initial={{
+                            opacity: 0,
+                          }}
+                          animate={{
+                            opacity: 1,
+                          }}
+                          exit={{
+                            opacity: 0,
+                          }}
+                          className="border-t"
+                        >
+                          <td className="p-3">
+                            {item.product_name}
+                          </td>
+
+                          <td className="p-3 text-center">
+                            {item.quantity}
+                          </td>
+
+                          <td className="p-3 text-center">
+                            ₹
+                            {item.price.toFixed(
+                              2
+                            )}
+                          </td>
+
+                          <td className="p-3 text-center font-bold text-emerald-700">
+                            ₹
+                            {item.total.toFixed(
+                              2
+                            )}
+                          </td>
+
+                          <td className="p-3 text-center">
+                            <button
+                              type="button"
+                             onClick={() =>
+                             setFormData((prev) => ({
+                             ...prev,
+                             items: prev.items.filter(
+                             (i) => i.id !== item.id
+                                ),
+                             }))
+                            }
+                              className="text-rose-600 text-xs"
+                            >
+                              Remove
+                            </button>
+                          </td>
+                        </motion.tr>
+                      ))
+                    )}
+
+                  </AnimatePresence>
+                </tbody>
+              </table>
+            </div>
           </div>
-        )}
-      </main>
+
+          {/* TOTAL */}
+
+          <div className="flex justify-between items-center bg-zinc-50 border rounded-xl px-5 py-4">
+            <span className="text-sm font-bold">
+              Grand Total
+            </span>
+
+            <span className="text-2xl font-black text-emerald-800">
+              ₹{grandTotal.toFixed(2)}
+            </span>
+          </div>
+
+          {/* PAYMENT */}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+            <select
+              value={payment_method}
+              onChange={(e) =>
+                handleFieldChange(
+                  "payment_method",
+                  e.target.value
+                )
+              }
+              className="w-full h-10 border rounded-lg px-3 text-sm"
+            >
+              <option value="Cash">
+                Cash
+              </option>
+
+              <option value="UPI">
+                UPI
+              </option>
+
+              <option value="Card">
+                Card
+              </option>
+            </select>
+
+            <select
+              value={payment_status}
+              onChange={(e) =>
+                handleFieldChange(
+                  "payment_status",
+                  e.target.value
+                )
+              }
+              className="w-full h-10 border rounded-lg px-3 text-sm"
+            >
+              <option value="Paid">
+                Paid
+              </option>
+
+              <option value="Due">
+                Due
+              </option>
+
+              <option value="Partial">
+                Partial
+              </option>
+            </select>
+          </div>
+
+          {/* SAVE BUTTON */}
+
+          <Button
+            type="button"
+            onClick={handleSaveSalesEntry}
+            disabled={isLoading}
+            className="relative z-10 w-full h-12 bg-emerald-800 hover:bg-emerald-900 text-white font-bold rounded-xl"
+          >
+            {isLoading
+              ? "Saving..."
+              : "Generate & Save Sales Invoice"}
+          </Button>
+
+        </div>
+      </motion.div>
     </div>
   );
 }
+
+// ========================================================
+// EXPORT PAGE
+// ========================================================
+export default SalesEntryForm;
