@@ -11,6 +11,7 @@ const playfair = Playfair_Display({
   variable: "--font-playfair",
 });
 
+
 export default function Home() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-[#050505] p-6">

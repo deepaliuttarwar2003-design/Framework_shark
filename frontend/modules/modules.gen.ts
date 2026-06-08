@@ -7,6 +7,7 @@ import { EstimateModule as estimateModule } from "@/modules/estimate"
 import { InventoryModule as inventoryModule } from "@/modules/inventory"
 import { Purchase_orderModule as purchase_orderModule } from "@/modules/purchase_order"
 import { SalesModule as salesModule } from "@/modules/sales"
+import { Contract_ManagementModule as contract_managementModule } from "@/modules/Contract_Management"
 
 export function loadModules() {
   return [
@@ -16,6 +17,7 @@ export function loadModules() {
     estimateModule,
     inventoryModule,
     purchase_orderModule,
-    salesModule
+    salesModule,
+    contract_managementModule
   ]
 }
