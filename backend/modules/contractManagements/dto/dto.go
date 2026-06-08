@@ -7,7 +7,7 @@ type ContractItemRequest struct {
 	Qty         int     `json:"qty"`
 	Unit        string  `json:"unit"`
 	Rate        float64 `json:"rate"`
-	total       float64 `json:"total"`
+	Total       float64 `json:"total"`
 }
 
 type CreateContractRequest struct {

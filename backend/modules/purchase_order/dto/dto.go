@@ -8,12 +8,21 @@ type PurchaseOrderItemRequest struct {
 }
 
 type CreatePurchaseOrderRequest struct {
-	SupplierName    string `json:"supplier_name"`
-	CompanyName     string `json:"company_name"`
-	SupplierContact string `json:"supplier_contact"`
-	SupplierAddress string `json:"supplier_address"`
-	GSTIN           string `json:"gstin"`
-	Status          string `json:"status"`
+	SupplierName    string                     `json:"supplier_name"`
+	CompanyName     string                     `json:"company_name"`
+	SupplierContact string                     `json:"supplier_contact"`
+	SupplierAddress string                     `json:"supplier_address"`
+	GSTIN           string                     `json:"gstin"`
+	Status          string                     `json:"status"`
+	Items           []PurchaseOrderItemRequest `json:"items"`
+}
 
-	Items []PurchaseOrderItemRequest `json:"items"`
+type UpdatePurchaseOrderRequest struct {
+	SupplierName    string                     `json:"supplier_name"`
+	CompanyName     string                     `json:"company_name"`
+	SupplierContact string                     `json:"supplier_contact"`
+	SupplierAddress string                     `json:"supplier_address"`
+	GSTIN           string                     `json:"gstin"`
+	Status          string                     `json:"status"`
+	Items           []PurchaseOrderItemRequest `json:"items"`
 }

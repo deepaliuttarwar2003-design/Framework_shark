@@ -2,12 +2,14 @@ package model
 
 import "time"
 
+
+
 type ContractItem struct {
 	Description string  `bson:"description" json:"description"`
 	Qty         int     `bson:"qty" json:"qty"`
 	Unit        string  `bson:"unit" json:"unit"`
 	Rate        float64 `bson:"rate" json:"rate"`
-	total       float64 `bson:"total" json:"total"`
+	Total       float64 `bson:"total" json:"total"`
 }
 
 type ContractManagements struct {

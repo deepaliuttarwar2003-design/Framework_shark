@@ -3,10 +3,11 @@ package service
 import (
 	"time"
 
+	"github.com/google/uuid"
+
 	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/purchase_order/dto"
 	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/purchase_order/model"
 	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/purchase_order/repository"
-	//"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/purchase_order/utils"
 )
 
 type PurchaseOrderService struct {
@@ -22,29 +23,35 @@ func NewPurchaseOrderService(
 	}
 }
 
+// Create Purchase Order
 func (s *PurchaseOrderService) Create(
 	req dto.CreatePurchaseOrderRequest,
 ) (*model.PurchaseOrder, error) {
 
 	var total float64
-
 	var items []model.PurchaseOrderItem
 
 	for _, item := range req.Items {
 
-		total += item.Total
+		itemTotal := item.Total
+
+		// Auto-calculate if Total not provided
+		if itemTotal == 0 {
+			itemTotal = float64(item.Quantity) * item.Price
+		}
+
+		total += itemTotal
 
 		items = append(items, model.PurchaseOrderItem{
 			ProductName: item.ProductName,
 			Quantity:    item.Quantity,
 			Price:       item.Price,
-			Total:       item.Total,
+			Total:       itemTotal,
 		})
-
 	}
 
 	order := &model.PurchaseOrder{
-		//ID: utils.GenerateID(),
+		ID: uuid.New().String(),
 
 		PONumber: "PO-2026",
 
@@ -64,15 +71,14 @@ func (s *PurchaseOrderService) Create(
 		UpdatedAt: time.Now(),
 	}
 
-	err := s.repo.Create(order)
-
-	if err != nil {
+	if err := s.repo.Create(order); err != nil {
 		return nil, err
 	}
 
 	return order, nil
 }
 
+// Get All Purchase Orders
 func (s *PurchaseOrderService) GetAll() (
 	[]model.PurchaseOrder,
 	error,
@@ -80,21 +86,23 @@ func (s *PurchaseOrderService) GetAll() (
 	return s.repo.GetAll()
 }
 
-
-func (s *PurchaseOrderService) GetByID(id string) (
+// Get Purchase Order By ID
+func (s *PurchaseOrderService) GetByID(
+	id string,
+) (
 	*model.PurchaseOrder,
 	error,
 ) {
 	return s.repo.GetByID(id)
 }
 
+// Update Purchase Order
 func (s *PurchaseOrderService) Update(
 	id string,
 	req dto.UpdatePurchaseOrderRequest,
 ) error {
 
 	order, err := s.repo.GetByID(id)
-
 	if err != nil {
 		return err
 	}
@@ -104,104 +112,39 @@ func (s *PurchaseOrderService) Update(
 	order.SupplierContact = req.SupplierContact
 	order.SupplierAddress = req.SupplierAddress
 	order.GSTIN = req.GSTIN
-
 	order.Status = req.Status
 
 	var total float64
-
 	var items []model.PurchaseOrderItem
 
 	for _, item := range req.Items {
 
-		total += item.Total
+		itemTotal := item.Total
+
+		if itemTotal == 0 {
+			itemTotal = float64(item.Quantity) * item.Price
+		}
+
+		total += itemTotal
 
 		items = append(items, model.PurchaseOrderItem{
 			ProductName: item.ProductName,
 			Quantity:    item.Quantity,
 			Price:       item.Price,
-			Total:       item.Total,
+			Total:       itemTotal,
 		})
-
 	}
 
 	order.Items = items
-
 	order.GrandTotal = total
-
 	order.UpdatedAt = time.Now()
 
 	return s.repo.Update(id, order)
 }
 
-func (s *PurchaseOrderService) Delete(id string) error {
+// Delete Purchase Order
+func (s *PurchaseOrderService) Delete(
+	id string,
+) error {
 	return s.repo.Delete(id)
-}			
-
-func (r *Repository) GetAll() ([]model.PurchaseOrder, error) {
-
-	var orders []model.PurchaseOrder
-
-	cursor, err := r.collection.Find(
-		context.Background(),
-		map[string]interface{}{},
-	)
-
-	if err != nil {
-		return nil, err
-	}
-
-	defer cursor.Close(context.Background())
-
-	for cursor.Next(context.Background()) {
-
-		var order model.PurchaseOrder
-
-		cursor.Decode(&order)
-
-		orders = append(orders, order)
-	}
-
-	return orders, nil
 }
-
-func (r *Repository) GetByID(id string) (*model.PurchaseOrder, error) {
-
-	var order model.PurchaseOrder
-
-	err := r.collection.FindOne(
-		context.Background(),
-		map[string]interface{}{
-			"id": id,
-		},
-	).Decode(&order)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return &order, nil
-}
-
-func (r *Repository) Update(id string, po *model.PurchaseOrder) error {
-
-	_, err := r.collection.UpdateOne(
-		context.Background(),
-		map[string]interface{}{
-			"id": id,
-		},
-		map[string]interface{}{
-			"$set": po,
-		},
-	)
-
-	return err
-}
-
-func (r *Repository) Delete(id string) error {
-
-	_, err := r.collection.DeleteOne(
-		context.Background(),
-		map[string]interface{}{
-			"id": id,
-		},
-	)

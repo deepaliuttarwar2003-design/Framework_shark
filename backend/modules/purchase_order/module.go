@@ -48,9 +48,9 @@ func (m *Module) RegisterRoutes(r *gin.RouterGroup) {
 	// 		"module": ModuleName,
 	// 	})
 	// })
-	r.POST("/create", m.handler.Create)
+	r.POST("/createpurchaseorder", m.handler.Create)
 
-	r.GET("/list", m.handler.GetAll)
+	r.GET("/getallpurchaseorders", m.handler.GetAll)
 
 }
 

@@ -35,14 +35,17 @@ func (m *Module) Init(ctx *module.ModuleContext) error {
 }
 
 func (m *Module) RegisterRoutes(rg *gin.RouterGroup) {
-	fmt.Println(">>> Contract RegisterRoutes called")
 
-	contracts := rg.Group("/contracts")
+	contracts := rg.Group("/contract_management")
 	{
-		contracts.POST("/create", m.handler.Create)
-		contracts.GET("/all", m.handler.GetAll)
-		contracts.GET("/all/:id", m.handler.GetByID)
-		contracts.PUT("/:id", m.handler.Update)
-		contracts.DELETE("/:id", m.handler.Delete)
+		contracts.POST("/createcontracts", m.handler.Create)
+
+		contracts.GET("/getallcontracts", m.handler.GetAll)
+
+		contracts.GET("/getcontractsby/:id", m.handler.GetByID)
+
+		contracts.PUT("/updatecontracts/:id", m.handler.Update)
+
+		contracts.DELETE("/deletecontracts/:id", m.handler.Delete)
 	}
 }

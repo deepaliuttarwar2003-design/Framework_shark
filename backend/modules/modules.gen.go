@@ -6,17 +6,14 @@ import (
 	"log"
 
 	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/core/module"
+	proposal "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/porposal"
 	"github.com/gin-gonic/gin"
 
-	// contractmanagement "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/contractmanagement"
 	contractManagements "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/contractManagements"
 	crm "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm"
 	health "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/health"
-
-	// purchase_order "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/purchase_order"
 	purchase_order "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/purchase_order"
 	sales "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/sales"
-	//"github.com/gin-gonic/gin"
 )
 
 func LoadModules() []module.Module {
@@ -26,7 +23,8 @@ func LoadModules() []module.Module {
 		health.NewModule(),
 		purchase_order.NewModule(),
 		sales.NewModule(),
-	}
+		proposal.NewModule(),
+	}  
 }
 
 func RegisterModules(r *gin.Engine, ctx *module.ModuleContext) {

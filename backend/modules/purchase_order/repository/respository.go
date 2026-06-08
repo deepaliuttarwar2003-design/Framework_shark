@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/purchase_order/model"
-
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -13,12 +12,12 @@ type Repository struct {
 }
 
 func NewRepository(db *mongo.Database) *Repository {
-
 	return &Repository{
 		collection: db.Collection("purchase_orders"),
 	}
 }
 
+// Create Purchase Order
 func (r *Repository) Create(po *model.PurchaseOrder) error {
 
 	_, err := r.collection.InsertOne(
@@ -29,6 +28,7 @@ func (r *Repository) Create(po *model.PurchaseOrder) error {
 	return err
 }
 
+// Get All Purchase Orders
 func (r *Repository) GetAll() ([]model.PurchaseOrder, error) {
 
 	var orders []model.PurchaseOrder
@@ -48,7 +48,9 @@ func (r *Repository) GetAll() ([]model.PurchaseOrder, error) {
 
 		var order model.PurchaseOrder
 
-		cursor.Decode(&order)
+		if err := cursor.Decode(&order); err != nil {
+			return nil, err
+		}
 
 		orders = append(orders, order)
 	}
@@ -56,6 +58,7 @@ func (r *Repository) GetAll() ([]model.PurchaseOrder, error) {
 	return orders, nil
 }
 
+// Get Purchase Order By ID
 func (r *Repository) GetByID(id string) (*model.PurchaseOrder, error) {
 
 	var order model.PurchaseOrder
@@ -70,8 +73,11 @@ func (r *Repository) GetByID(id string) (*model.PurchaseOrder, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	return &order, nil
 }
 
+// Update Purchase Order
 func (r *Repository) Update(id string, po *model.PurchaseOrder) error {
 
 	_, err := r.collection.UpdateOne(
@@ -87,6 +93,7 @@ func (r *Repository) Update(id string, po *model.PurchaseOrder) error {
 	return err
 }
 
+// Delete Purchase Order
 func (r *Repository) Delete(id string) error {
 
 	_, err := r.collection.DeleteOne(
