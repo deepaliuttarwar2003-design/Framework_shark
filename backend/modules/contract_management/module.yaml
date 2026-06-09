@@ -1,6 +1,4 @@
-
-name: estimate
-
+name: contract_management
 version: 1.0.0
 type: module
 
@@ -14,8 +12,7 @@ entry:
 dependencies: []
 
 routes:
-
-  - /estimate
+  - /contract_management
 
 events:
   publish: []

@@ -1,7 +1,4 @@
-
-package estimate
-
-
+package contract_management
 
 import "github.com/google/uuid"
 

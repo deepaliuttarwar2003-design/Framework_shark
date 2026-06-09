@@ -107,7 +107,6 @@ func (m *Module) RegisterRoutes(r *gin.RouterGroup) {
 	// 	})
 	// })
 	r.POST("/createpurchaseorder", m.handler.Create)
-
 	r.GET("/getallpurchaseorders", m.handler.GetAll)
 
 }
