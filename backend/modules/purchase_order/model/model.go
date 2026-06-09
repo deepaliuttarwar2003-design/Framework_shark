@@ -7,10 +7,10 @@ import (
 )
 
 type PurchaseOrderItem struct {
-	ProductName string  `bson:"product_name" json:"product_name"`
-	Quantity    int     `bson:"quantity" json:"quantity"`
-	Price       float64 `bson:"price" json:"price"`
-	Total       float64 `bson:"total" json:"total"`
+	ProductName string  `json:"product_name" bson:"product_name"`
+	Quantity    int     `json:"quantity" bson:"quantity"`
+	Price       float64 `json:"price" bson:"price"`
+	Total       float64 `json:"total" bson:"total"`
 }
 
 type PurchaseOrder struct {
@@ -23,11 +23,11 @@ type PurchaseOrder struct {
 	SupplierAddress string `bson:"supplier_address" json:"supplier_address"`
 	GSTIN           string `bson:"gstin" json:"gstin"`
 
-	Status string `bson:"status" json:"status"`
+	Status string `json:"status" bson:"status"`
 
-	Items []PurchaseOrderItem `bson:"items" json:"items"`
+	Items []PurchaseOrderItem `json:"items" bson:"items"`
 
-	GrandTotal float64 `bson:"grand_total" json:"grand_total"`
+	GrandTotal float64 `json:"grand_total" bson:"grand_total"`
 
 	CreatedAt time.Time `bson:"created_at" json:"created_at"`
 	UpdatedAt time.Time `bson:"updated_at" json:"updated_at"`

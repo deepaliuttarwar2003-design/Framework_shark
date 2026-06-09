@@ -10,7 +10,7 @@ export const apiSlice = createApi({
     baseUrl: "http://localhost:8080/api",
   }),
 
-  tagTypes: ["Lead","Inventory","Projects","Lead","Estimate","Sales","Purchase","Contract"],
+  tagTypes: ["Lead","Inventory","Projects","Lead","Estimate","Sales","Purchase","Contracts"],
   
 
   endpoints: () => ({}),
