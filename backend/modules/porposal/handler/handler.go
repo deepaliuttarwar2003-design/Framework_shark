@@ -22,7 +22,7 @@ func NewHandler(service *service.Service) *Handler {
 // CREATE
 func (h *Handler) Create(c *gin.Context) {
 
-	var req dto.CreateProposalDTO
+	var req dto.CreateProposalRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -89,7 +89,7 @@ func (h *Handler) Update(c *gin.Context) {
 
 	id := c.Param("id")
 
-	var req dto.UpdateProposalDTO
+	var req dto.UpdateProposalRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{

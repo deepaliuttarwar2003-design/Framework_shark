@@ -1,14 +1,14 @@
 // AUTO-GENERATED FILE — DO NOT EDIT
 
-import { BusinessporposalModule as businessporposalModule } from "@/modules/businessporposal"
-import { ContractManagementsModule as contractManagementsModule } from "@/modules/contractManagements"
+import { AuthModule as authModule } from "@/modules/auth"
+import { Contract_managementModule as contract_managementModule } from "@/modules/contract_management"
 import { CrmModule as crmModule } from "@/modules/crm"
 import { SalesModule as salesModule } from "@/modules/sales"
 
 export function loadModules() {
   return [
-    businessporposalModule,
-    contractManagementsModule,
+    authModule,
+    contract_managementModule,
     crmModule,
     salesModule
   ]

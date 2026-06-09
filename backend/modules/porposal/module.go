@@ -37,8 +37,8 @@ func (m *Module) RegisterRoutes(r *gin.RouterGroup) {
 	r.POST("/create", m.handler.Create)
 	r.GET("/getallporposal", m.handler.GetAll)
 	r.GET("/getallporposal/:id", m.handler.GetByID)
-	r.PUT("/put/porposal/:id", m.handler.Update)
-	r.DELETE("/delete/porposal/:id", m.handler.Delete)
+	r.PUT("/updateporposal/:id", m.handler.Update)
+	r.DELETE("/deleteporposal/:id", m.handler.Delete)
 }
 
 var _ module.Module = (*Module)(nil)
