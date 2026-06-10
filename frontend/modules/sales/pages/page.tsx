@@ -2,8 +2,6 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-
-import { Provider, useDispatch, useSelector } from "react-redux";
 import {useCreateSalesMutation,useGetSalesQuery} from "../slice/salesapislice";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -38,8 +36,7 @@ interface SalesState {
 // ========================================================
 
 function SalesEntryForm() {
-  const dispatch = useDispatch();
-const {data: sales, isLoading: salesLoading} = useGetSalesQuery();
+
   const [createSales, { isLoading }] =
     useCreateSalesMutation();
 
@@ -121,7 +118,7 @@ setFormData((prev) => ({
   items: [...prev.items, newItem],
 }));
 
-    setFormData(....)
+    
 
     setInputName("");
     setInputQty(1);
@@ -155,7 +152,7 @@ setFormData((prev) => ({
 
       return;
     }
-  };
+  
 
     try {
    const response = await createSales(
@@ -518,7 +515,5 @@ setFormData((prev) => ({
   );
 }
 
-// ========================================================
-// EXPORT PAGE
-// ========================================================
+
 export default SalesEntryForm;
