@@ -2,13 +2,11 @@ package handler
 
 import (
 	"net/http"
-	model "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/invoice/model"
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/invoice/service"
 	dto "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/invoice/dto"
-	"time"
+	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/invoice/service"
 )
 
 type Handler struct {
@@ -21,7 +19,13 @@ func NewHandler(service *service.Service) *Handler {
 
 func (h *Handler) GetAll(c *gin.Context) {
 
-	data := h.service.GetAll()
+	data, err := h.service.GetAll()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"data": data,
@@ -39,42 +43,66 @@ func (h *Handler) Create(c *gin.Context) {
 		return
 	}
 
-	var subtotal float64
+	result, err := h.service.Create(input)
 
-	var items []model.InvoiceItem
-
-	for _, item := range input.Items {
-
-		price := 1000.0 // Fetch from product table
-
-		amount := price * float64(item.Quantity)
-
-		subtotal += amount
-
-		items = append(items, model.InvoiceItem{
-			ProductID: item.ProductID,
-			Quantity:  item.Quantity,
-			Price:     price,
-			Amount:    amount,
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
 		})
+		return
 	}
 
-	tax := subtotal * 0.18
-	total := subtotal + tax
+	c.JSON(http.StatusOK, result)
+}
 
-	invoice := model.Invoice{
-		InvoiceNo:   "INV-001",
-		CustomerID:  input.CustomerID,
-		InvoiceDate: time.Now().Format("2006-01-02"),
-		DueDate:     input.DueDate,
-		Subtotal:    subtotal,
-		Tax:         tax,
-		TotalAmount: total,
-		Status:      "Pending",
-		Items:       items,
+// update
+
+func (h *Handler) Update(c *gin.Context) {
+	id := c.Param("id")
+
+	var input dto.CreateInvoiceDTO
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
 	}
 
-	// db.Create(&invoice)
+	result, err := h.service.Update(id, input)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
 
-	c.JSON(http.StatusCreated, invoice)
+	if result == nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"error": "invoice not found",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, result)
+
+}
+
+// delete
+
+func (h *Handler) Delete(c *gin.Context) {
+	id := c.Param("id")
+
+	err := h.service.Delete(id)
+
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"error": "invoice not found",
+		})
+
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "invoice deleted successfully",
+	})
 }

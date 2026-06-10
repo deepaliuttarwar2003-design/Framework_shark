@@ -7,67 +7,120 @@ import (
 	dto "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/invoice/dto"
 	model "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/invoice/model"
 	repository "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/invoice/repository"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type Service struct {
 	repo *repository.Repository
 }
 
-func NewService() *Service {
+func NewService(db *mongo.Database) *Service {
 	return &Service{
-		repo: repository.NewRepository(),
+		repo: repository.NewRepository(db),
 	}
 }
 
-func (s *Service) GetAll() []model.Invoice {
+func (s *Service) GetAll() ([]model.Invoice, error) {
 	return s.repo.FindAll()
 }
 
-func (s *Service) Create(input dto.CreateInvoiceDTO) (*model.Invoice, error) {
+func (s *Service) Create(input dto.CreateInvoiceDTO) (model.Invoice, error) {
+
+	if input.CustomerName == "" {
+		return model.Invoice{},
+			fmt.Errorf("customer name is required")
+	}
+
+	if input.CustomerEmail == "" {
+		return model.Invoice{},
+			fmt.Errorf("customer email is required")
+	}
+
+	if len(input.Items) == 0 {
+		return model.Invoice{},
+			fmt.Errorf("at least one item is required")
+	}
 
 	var subtotal float64
-	var items []model.InvoiceItem
 
 	for _, item := range input.Items {
 
-		price := 1000.0
-
-		amount := price * float64(item.Quantity)
+		amount := item.Price * float64(item.Quantity)
 
 		subtotal += amount
-
-		items = append(items, model.InvoiceItem{
-			ProductID: item.ProductID,
-			Quantity:  item.Quantity,
-			Price:     price,
-			Amount:    amount,
-		})
 	}
 
 	tax := subtotal * 0.18
 	total := subtotal + tax
 
-	invoiceNumber := fmt.Sprintf(
-		"INV-%s",
-		time.Now().Format("20060102150405"),
+	invoiceNo := fmt.Sprintf(
+		"INV-%d",
+		time.Now().Unix(),
 	)
 
-	invoice := model.Invoice{
-		InvoiceNo:   invoiceNumber,
-		CustomerID:  input.CustomerID,
-		InvoiceDate: time.Now().Format("2006-01-02"),
-		DueDate:     input.DueDate,
-		Subtotal:    subtotal,
-		Tax:         tax,
-		TotalAmount: total,
-		Status:      "Pending",
-		Items:       items,
+	entity := model.Invoice{
+		ID:            primitive.NewObjectID(),
+		InvoiceNo:     invoiceNo,
+		CustomerName:  input.CustomerName,
+		CustomerEmail: input.CustomerEmail,
+		InvoiceDate:   time.Now().Format("2006-01-02"),
+		DueDate:       input.DueDate,
+		Subtotal:      subtotal,
+		Tax:           tax,
+		TotalAmount:   total,
+		Status:        "Pending",
+		Items:         input.Items,
+		Payment:       input.Payment,
 	}
 
-	// err = s.repo.CreateInvoice(&invoice)
-	// if err != nil {
-	// 	return nil, err
-	// }
+	result, err := s.repo.Create(entity)
+	if err != nil {
+		return model.Invoice{}, err
+	}
 
-	return &invoice, nil
+	return result, nil
+}
+
+func (s *Service) Update(
+	id string,
+	input dto.CreateInvoiceDTO,
+) (*model.Invoice, error) {
+
+	var subtotal float64
+
+	for _, item := range input.Items {
+
+		amount := item.Price * float64(item.Quantity)
+
+		subtotal += amount
+	}
+
+	tax := subtotal * 0.18
+	total := subtotal + tax
+
+	entity := model.Invoice{
+		InvoiceNo:     input.InvoiceNo,
+		InvoiceDate:   time.Now().Format("2006-01-02"),
+		CustomerName:  input.CustomerName,
+		CustomerEmail: input.CustomerEmail,
+		DueDate:       input.DueDate,
+		Subtotal:      subtotal,
+		Tax:           tax,
+		TotalAmount:   total,
+		Status:        input.Status,
+		Items:         input.Items,
+		Payment:       input.Payment,
+	}
+
+	updated, err := s.repo.Update(id, entity)
+	if err != nil {
+		return nil, err
+	}
+
+	return &updated, nil
+}
+
+func (s *Service) Delete(id string) error {
+	return s.repo.Delete(id)
 }

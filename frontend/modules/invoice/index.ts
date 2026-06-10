@@ -11,5 +11,5 @@ export const InvoiceModule: AppModule = {
   permissions: {
     read: "invoice.read",
     write: "invoice.write",
-  },
+  }, 
 }
