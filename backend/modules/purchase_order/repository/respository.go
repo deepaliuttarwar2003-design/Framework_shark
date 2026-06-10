@@ -69,7 +69,7 @@ func (r *Repository) GetByID(id string) (*model.PurchaseOrder, error) {
 
 	err := r.collection.FindOne(
 		context.Background(),
-		bson.M{"_id": objID},
+		bson.M{"_id": id},
 	).Decode(&order)
 
 	if err != nil {
@@ -83,7 +83,7 @@ func (r *Repository) Update(id string, po *model.PurchaseOrder) error {
 
 	_, err := r.collection.UpdateOne(
 		context.Background(),
-		bson.M{"_id": objID},
+		bson.M{"_id": id},
 		bson.M{"$set": po},
 	)
 
@@ -95,7 +95,7 @@ func (r *Repository) Delete(id string) error {
 
 	_, err := r.collection.DeleteOne(
 		context.Background(),
-		bson.M{"_id": objID},
+		bson.M{"_id": id},
 	)
 
 	return err

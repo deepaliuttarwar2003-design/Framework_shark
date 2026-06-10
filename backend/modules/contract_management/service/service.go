@@ -1,37 +1,54 @@
 package service
 
 import (
-	repository "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/contract_management/repository"
-	model "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/contract_management/model"
+	"context"
+
 	dto "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/contract_management/dto"
-	contract_management "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/contract_management"
-	events "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/core/events"
+	model "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/contract_management/model"
+	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/contract_management/repository"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type Service struct {
 	repo *repository.Repository
 }
 
-func NewService() *Service {
+func NewService(repo *repository.Repository) *Service {
 	return &Service{
-		repo: repository.NewRepository(),
+		repo: repo,
 	}
 }
 
-func (s *Service) GetAll() []model.ContractManagement {
-	return s.repo.FindAll()
+func (s *Service) Create(
+	ctx context.Context,
+	req *dto.CreateContractRequest,
+) error {
+
+	_, err := s.repo.Create(ctx, req)
+
+	return err
 }
 
-func (s *Service) Create(input dto.CreateContractManagementDTO) model.ContractManagement {
+func (s *Service) GetAll(
+	ctx context.Context,
+) ([]model.ContractManagements, error) {
 
-	entity := model.ContractManagement{
-		ID:   contract_management.GenerateID(),
-		Name: input.Name,
-	}
+	return s.repo.FindAll(ctx)
+}
 
-	result := s.repo.Save(entity)
+func (s *Service) GetByID(ctx context.Context, id primitive.ObjectID) (*model.ContractManagements, error) {
+	return s.repo.GetByID(ctx, id)
+}
 
-	events.Publish("contract_management.created", result)
+func (s *Service) Update(
+	ctx context.Context,
+	id primitive.ObjectID,
+	req *dto.UpdateContractRequest,
+) error {
 
-	return result
+	return s.repo.Update(ctx, id, req)
+}
+
+func (s *Service) Delete(ctx context.Context, id primitive.ObjectID) error {
+	return s.repo.Delete(ctx, id)
 }

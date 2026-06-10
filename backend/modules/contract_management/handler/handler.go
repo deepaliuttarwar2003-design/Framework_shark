@@ -3,10 +3,10 @@ package handler
 import (
 	"net/http"
 
-	"github.com/gin-gonic/gin"
-
-	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/contract_management/service"
 	dto "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/contract_management/dto"
+	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/contract_management/service"
+    "go.mongodb.org/mongo-driver/bson/primitive"
+	"github.com/gin-gonic/gin"
 )
 
 type Handler struct {
@@ -14,30 +14,140 @@ type Handler struct {
 }
 
 func NewHandler(service *service.Service) *Handler {
-	return &Handler{service: service}
-}
-
-func (h *Handler) GetAll(c *gin.Context) {
-
-	data := h.service.GetAll()
-
-	c.JSON(http.StatusOK, gin.H{
-		"data": data,
-	})
+	return &Handler{
+		service: service,
+	}
 }
 
 func (h *Handler) Create(c *gin.Context) {
 
-	var input dto.CreateContractManagementDTO
+	var req dto.CreateContractRequest
 
-	if err := c.ShouldBindJSON(&input); err != nil {
+	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
 
-	result := h.service.Create(input)
+	err := h.service.Create(c.Request.Context(), &req)
 
-	c.JSON(http.StatusOK, result)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{
+		"message": "contract created successfully",
+	})
+}
+
+func (h *Handler) GetAll(c *gin.Context) {
+
+	contracts, err := h.service.GetAll(c.Request.Context())
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, contracts)
+}
+
+func (h *Handler) GetByID(c *gin.Context) {
+
+	id := c.Param("id")
+
+	oid, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "invalid contract ID",
+		})
+		return
+	}
+
+	data, err := h.service.GetByID(
+		c.Request.Context(),
+		oid,
+	)
+
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, data)
+}
+
+func (h *Handler) Update(c *gin.Context) {
+
+	id := c.Param("id")
+
+	var req dto.UpdateContractRequest
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	oid, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "invalid contract ID",
+		})
+		return
+	}
+
+	err = h.service.Update(
+		c.Request.Context(),
+		oid,
+		&req,
+	)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "contract updated successfully",
+	})
+}
+
+func (h *Handler) Delete(c *gin.Context) {
+
+	id := c.Param("id")
+
+	oid, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "invalid contract ID",
+		})
+		return
+	}
+
+	err = h.service.Delete(
+		c.Request.Context(),
+		oid,
+	)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "contract deleted successfully",
+	})
 }

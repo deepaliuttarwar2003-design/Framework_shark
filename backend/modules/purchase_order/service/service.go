@@ -3,7 +3,7 @@ package service
 import (
 	"time"
 
-	"github.com/google/uuid"
+	// "github.com/google/uuid"
 
 	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/purchase_order/dto"
 	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/purchase_order/model"
@@ -51,7 +51,7 @@ func (s *PurchaseOrderService) Create(
 	}
 
 	order := &model.PurchaseOrder{
-		ID: uuid.New().String(),
+		// ID: uuid.New().String(),
 
 		PONumber: "PO-2026",
 
