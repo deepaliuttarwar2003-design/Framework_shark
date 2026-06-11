@@ -87,7 +87,6 @@
 .delay-1 { animation-delay: 0.2s; }
 .delay-2 { animation-delay: 0.4s; }
 
-
 :root {
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);

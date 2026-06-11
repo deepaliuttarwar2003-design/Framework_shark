@@ -2,11 +2,7 @@
 
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-// import { Provider } from "react-redux";
 import ReduxProvider from "./store/provider";
-// import ReduxProvider from "@/s";
-
-// import { Provider } from "react-redux";
 import { store } from "@/app/store";
 
 const geistSans = Geist({

@@ -1,7 +1,4 @@
-
 package estimate
-
-
 
 import "github.com/google/uuid"
 

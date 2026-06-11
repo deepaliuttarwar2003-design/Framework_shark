@@ -17,6 +17,7 @@ import (
 	inventory "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/inventory"
 	purchase_order "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/purchase_order"
 	sales "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/sales"
+	invoice "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/invoice"
 )
 
 func LoadModules() []module.Module {
@@ -31,6 +32,7 @@ func LoadModules() []module.Module {
 		auth.NewModule(),
 		sales.NewModule(),
 		Porposal.NewModule(),
+		invoice.NewModule(),
 	}
 }
 

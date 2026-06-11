@@ -87,7 +87,3 @@ func (r *Repository) Delete(id string) error {
 
 }
 
-// func (r *Repository) Save(entity model.Estimate) model.Estimate {
-// 	r.db = append(r.db, entity)
-// 	return entity
-// }
