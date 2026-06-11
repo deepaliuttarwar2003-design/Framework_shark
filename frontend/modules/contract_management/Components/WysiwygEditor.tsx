@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Label } from "radix-ui";
 
 const toolbarButtons = [
     { label: "B", command: "bold" },
@@ -12,6 +13,13 @@ const toolbarButtons = [
     { label: "Link", command: "createLink" },
     { label: "Undo", command: "undo" },
     { label: "Redo", command: "redo" },
+    { label: "file upload", command: "fileUpload" },
+    { label: "Image", command: "insertImage" },
+    { label: "insertImage", command: "insertImage" },
+    { label: "view source", command: "viewSource" },
+    { label: "line spacing", command: "lineSpacing" },
+    { label: "text color", command: "textColor" },
+    { label: "tools", command: "tools" }
 ];
 
 interface Props {
@@ -67,7 +75,7 @@ export function WysiwygEditor({ value, onChange }: Props) {
                 ref={editorRef}
                 contentEditable
                 suppressContentEditableWarning
-                className="min-h-[220px] rounded-2xl border border-zinc-200 bg-white p-4 text-sm leading-7 text-zinc-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="min-h-55 rounded-2xl border border-zinc-200 bg-white p-4 text-sm leading-7 text-zinc-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 onInput={handleInput}
                 dangerouslySetInnerHTML={{ __html: html }}
             />
