@@ -6,6 +6,7 @@ import (
 	model "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/auth/model"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -19,6 +20,8 @@ func NewRepository(db *mongo.Database) *Repository {
 	}
 }
 
+// ================= REGISTER =================
+
 func (r *Repository) Register(user model.Auth) (interface{}, error) {
 
 	collection := r.db.Collection("users")
@@ -28,8 +31,16 @@ func (r *Repository) Register(user model.Auth) (interface{}, error) {
 		user,
 	)
 
-	return result, err
+	if err != nil {
+		return nil, err
+	}
+
+	user.ID = result.InsertedID.(primitive.ObjectID)
+
+	return user, nil
 }
+
+// ================= FIND BY EMAIL =================
 
 func (r *Repository) FindByEmail(email string) (*model.Auth, error) {
 
@@ -40,6 +51,31 @@ func (r *Repository) FindByEmail(email string) (*model.Auth, error) {
 	err := collection.FindOne(
 		context.Background(),
 		bson.M{"email": email},
+	).Decode(&user)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+
+// ================= FIND BY ID =================
+
+func (r *Repository) FindByID(id string) (*model.Auth, error) {
+
+	collection := r.db.Collection("users")
+
+	objectID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, err
+	}
+
+	var user model.Auth
+
+	err = collection.FindOne(
+		context.Background(),
+		bson.M{"_id": objectID},
 	).Decode(&user)
 
 	if err != nil {

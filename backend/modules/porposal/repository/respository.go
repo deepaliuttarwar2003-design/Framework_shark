@@ -91,7 +91,7 @@ func (r *Repository) Update(id string, proposal *model.Proposal) error {
 	return err
 }
 
-// DELETE
+// DELETE/
 func (r *Repository) Delete(id string) error {
 
 	objectID, err := primitive.ObjectIDFromHex(id)

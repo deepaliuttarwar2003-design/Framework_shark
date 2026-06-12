@@ -21,7 +21,7 @@ func NewService(repo *repository.Repository) *Service {
 }
 
 // Create Proposal
-func (s *Service) Create(req dto.CreateProposalRequest) error {
+func (s *Service) Create(req dto.CreateProposalDTO) error {
 
 	proposal := &model.Proposal{
 		ProposalID:          uuid.New().String(),
@@ -64,7 +64,7 @@ func (s *Service) GetByID(id string) (*model.Proposal, error) {
 }
 
 // Update Proposal
-func (s *Service) Update(id string, req dto.UpdateProposalRequest) error {
+func (s *Service) Update(id string, req dto.UpdateProposalDTO) error {
 
 	proposal, err := s.repo.GetByID(id)
 	if err != nil {
