@@ -22,6 +22,7 @@ import (
 
 func LoadModules() []module.Module {
 	return []module.Module{
+		Porposal.NewModule(),
 		Project_Management.NewModule(),
 		contract_management.NewModule(),
 		crm.NewModule(),

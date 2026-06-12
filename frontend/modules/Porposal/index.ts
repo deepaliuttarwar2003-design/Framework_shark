@@ -1,15 +1,15 @@
-import { AppModule } from "@/core/module"
+import { AppModule } from "@/core/module";
+import { ProposalList } from "./pages/page";
 
-export const PorposalModule: AppModule = {
-  name: "Porposal",
-
+export const ProposalModule: AppModule = {
+  name: "proposal",
   menu: {
-    label: "Porposal",
-    path: "/Porposal",
+    label: "Proposals",
+    path: "/proposal",
   },
-
   permissions: {
-    read: "Porposal.read",
-    write: "Porposal.write",
+    read: "proposal.read",
+    write: "proposal.write",
   },
-}
+  component: ProposalList, // Point to your main view
+};

@@ -1,76 +1,270 @@
-'use client'
+"use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-// Define a simple interface for better type safety
-interface Item {
-  id: string | number;
-  name: string;
-  description?: string;
-}
+import { Button } from "@/components/ui/button";
 
-export default function PorposalPage() {
-  const [data, setData] = useState<Item[]>([]);
-  const [loading, setLoading] = useState(true);
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
-  useEffect(() => {
-    fetch("/api/Porposal")
-      .then(res => res.json())
-      .then(res => {
-        setData(res.data);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
-  }, []);
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+
+import {
+  ProposalForm,
+  ProposalData,
+} from "../components/ProposalForm";
+import { useGetProposalsQuery, useDeleteProposalMutation } from "../Api/proposalApi";
+
+export const ProposalList = () => {
+  const [open, setOpen] = useState(false);
+
+  const [selectedProposal, setSelectedProposal] =
+    useState<ProposalData | null>(null);
+  const { data, isLoading } = useGetProposalsQuery();
+
+const proposals = data?.data || [];
+const[deleteproposal]=useDeleteProposalMutation()
+
+  const handleSubmit = (data: ProposalData) => {
+  setOpen(false);
+  setSelectedProposal(null);
+};
+
+const handleDelete =async (id?:string)=> {
+  console.log(id);
+  const res = await deleteproposal(id).unwrap
+};
+
+const handleEdit = (proposal: ProposalData) => {
+  console.log("Selected proposal:", proposal);
+  setSelectedProposal(proposal);
+  setOpen(true);
+};
+
+  
+
+  const handlePrint = (
+    proposal: ProposalData
+  ) => {
+    const printWindow = window.open(
+      "",
+      "_blank"
+    );
+
+    if (!printWindow) return;
+
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>${proposal.proposal_title}</title>
+
+          <style>
+            body {
+              font-family: Arial, sans-serif;
+              padding: 20px;
+            }
+
+            img {
+              max-width: 100%;
+            }
+          </style>
+        </head>
+
+        <body>
+          <h1>${proposal.proposal_title}</h1>
+
+          <hr />
+
+          <p>
+            <strong>Client:</strong>
+            ${proposal.client_name}
+          </p>
+
+          <p>
+            <strong>Email:</strong>
+            ${proposal.email}
+          </p>
+
+          <p>
+            <strong>Total Amount:</strong>
+            ₹${proposal.total_amount}
+          </p>
+
+          <hr />
+
+          ${proposal.description}
+        </body>
+      </html>
+    `);
+
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+  };
 
   return (
-    <div className="min-h-screen bg-black text-slate-200 font-sans p-8">
-      {/* Header Section */}
-      <header className="max-w-5xl mx-auto border-b border-blue-900/50 pb-6 mb-10">
-        <h1 className="text-4xl font-bold tracking-tight text-white">
-          Porposal <span className="text-blue-500">Module</span>
+    <div className="p-6 space-y-4">
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold">
+          Business Proposals
         </h1>
-        <p className="text-slate-500 mt-2">Management and overview of system entities.</p>
-      </header>
 
-      <main className="max-w-5xl mx-auto">
-        {loading ? (
-          <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-          </div>
-        ) : (
-          <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-            {data.map((item) => (
-              <div 
-                key={item.id} 
-                className="group relative bg-slate-900/40 border border-slate-800 p-6 rounded-xl transition-all duration-300 hover:border-blue-600/50 hover:bg-slate-900"
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-xs font-mono text-blue-400 uppercase tracking-widest">ID: {item.id}</span>
-                  <div className="h-2 w-2 rounded-full bg-blue-500 shadow-[0_0_8px_#3b82f6]"></div>
-                </div>
-                
-                <h2 className="text-xl font-semibold text-white group-hover:text-blue-400 transition-colors">
-                  {item.name}
-                </h2>
-                
-                <div className="mt-4 flex items-center text-sm text-slate-400 italic">
-                  View details 
-                  <svg className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                  </svg>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+        <Dialog
+          open={open}
+          onOpenChange={setOpen}
+        >
+          <DialogTrigger asChild>
+            <Button
+            className=" bg-black text-white "
+              onClick={() =>
+                setSelectedProposal(null)
+              }
+            >
+              
+              + New Proposal
+            </Button>
+          </DialogTrigger>
 
-        {!loading && data.length === 0 && (
-          <div className="text-center py-20 border-2 border-dashed border-slate-800 rounded-2xl">
-            <p className="text-slate-500">No records found in this module.</p>
-          </div>
-        )}
-      </main>
+          <DialogContent className="max-w-4xl">
+            <DialogHeader>
+              <DialogTitle>
+                {selectedProposal
+                  ? "Edit Proposal"
+                  : "Create Proposal"}
+              </DialogTitle>
+
+              <DialogDescription>
+                Fill proposal details below.
+              </DialogDescription>
+            </DialogHeader>
+
+            <ProposalForm
+              proposal={selectedProposal}
+              onSubmit={handleSubmit}
+            />
+          </DialogContent>
+        </Dialog>
+      </div>
+
+      <div className="rounded-md border">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>
+                Proposal Title
+              </TableHead>
+
+              <TableHead>
+                Client Name
+              </TableHead>
+
+              <TableHead>
+                Email
+              </TableHead>
+
+              <TableHead>
+                Total Amount
+              </TableHead>
+
+              <TableHead>
+                Actions
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+
+          <TableBody>
+            {proposals.length === 0 ? (
+              <TableRow>
+                <TableCell
+                  colSpan={5}
+                  className="text-center"
+                >
+                  No proposals found
+                </TableCell>
+              </TableRow>
+            ) : (
+              proposals.map((proposal) => (
+                <TableRow
+                  key={proposal.id}
+                >
+                  <TableCell>
+                    {
+                      proposal.proposal_title
+                    }
+                  </TableCell>
+
+                  <TableCell>
+                    {
+                      proposal.client_name
+                    }
+                  </TableCell>
+
+                  <TableCell>
+                    {proposal.email}
+                  </TableCell>
+
+                  <TableCell>
+                    ₹
+                    {proposal.total_amount.toLocaleString()}
+                  </TableCell>
+
+                  <TableCell>
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                    onClick={() => {
+                   console.log("Edit clicked:", proposal);
+                   handleEdit(proposal);
+                   }}
+                      >
+                        Edit
+                      </Button>
+
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={() =>
+                          handleDelete(
+                            proposal.id
+                          )
+                        }
+                      >
+                        Delete
+                      </Button>
+
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={() =>
+                          handlePrint(
+                            proposal
+                          )
+                        }
+                      >
+                        Print
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
-}
+};

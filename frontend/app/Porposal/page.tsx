@@ -1,1 +1,6 @@
-export { default } from "@/modules/Porposal/pages/page"
+"use client";
+import { ProposalList } from "@/modules/Porposal/pages/page";
+
+export default function ProposalPage() {
+    return <ProposalList />;
+}

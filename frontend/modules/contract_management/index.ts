@@ -1,15 +1,13 @@
-import { AppModule } from "@/core/module"
-
-export const ContractModule: AppModule = {
-  name: "contract",
-
+export interface AppModule {
+  name: string;
   menu: {
-    label: "Contract",
-    path: "/contract",
-  },
-
+    label: string;
+    path: string;
+  };
   permissions: {
-    read: "contract.read",
-    write: "contract.write",
-  },
+    read: string;
+    write: string;
+  };
+  // The '?' tells TypeScript: "It's okay if this is undefined"
+  component?: React.ComponentType | any;
 }
