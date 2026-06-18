@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
 :root {
@@ -11,7 +12,7 @@
   --foreground: oklch(0.985 0 0);
 }
 
-/* @theme inline {
+@theme inline {
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -33,12 +34,23 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-} */
+}
 
 /* -----------------------------
    Animations
 ------------------------------*/
 @keyframes breathe {
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.3;
+  }
+
+  50% {
+    transform: scale(1.1);
+    opacity: 0.4;
+  }
 
   0%,
   100% {
@@ -86,6 +98,8 @@
 :root {
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
+  --border: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
   --primary: oklch(0.205 0 0);
   --secondary: oklch(0.97 0 0);
   --muted: oklch(0.97 0 0);
@@ -99,6 +113,8 @@
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
+  --border: oklch(1 0 0 / 10%);
+  --ring: oklch(0.556 0 0);
   --primary: oklch(0.922 0 0);
   --secondary: oklch(0.269 0 0);
   --muted: oklch(0.269 0 0);
@@ -106,6 +122,35 @@
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.556 0 0);
+}
+
+@media print {
+  body {
+    margin: 0;
+  }
+
+  #print-agreement {
+    display: block !important;
+  }
+
+  body * {
+    display: none !important;
+  }
+
+  #print-agreement,
+  #print-agreement * {
+    display: block !important;
+    visibility: visible !important;
+  }
+
+  #print-agreement {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    padding: 20px;
+    background: white;
+  }
 }
 
 /* -----------------------------
@@ -141,7 +186,7 @@
 /* -----------------------------
    Base layer
 ------------------------------*/
-@layer base {
+/* @layer base {
   * {
     @apply border-border outline-ring/50;
   }
@@ -152,5 +197,17 @@
 
   html {
     @apply font-sans;
+  }
+} */
+
+
+@layer base {
+  body {
+    background: var(--background);
+    color: var(--foreground);
+  }
+
+  html {
+    font-family: sans-serif;
   }
 }

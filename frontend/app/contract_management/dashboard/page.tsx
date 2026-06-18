@@ -1,5 +1,5 @@
 import ContractsPage from "@/modules/contract_management/pages/page";
 
-export default function ContractManagementDashboard() {
+export default function Page() {
     return <ContractsPage />;
 }

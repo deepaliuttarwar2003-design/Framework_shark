@@ -25,7 +25,7 @@ function calculateGst(amount: number, gstPercent: number) {
 
 export default function ContractAgreement({ agreement }: Props) {
     return (
-        <div className="rounded-3xl border border-zinc-200 bg-white p-10 shadow-xl">
+        <div id="print-agreement" className="rounded-3xl border border-zinc-200 bg-white p-10 shadow-xl">
             <div className="space-y-4">
                 <span className="inline-flex rounded-full bg-blue-100 px-3 py-1 text-sm font-semibold text-blue-700">
                     Agreement Template

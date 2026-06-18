@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Label } from "radix-ui";
 
 const toolbarButtons = [
     { label: "B", command: "bold" },
@@ -13,13 +12,11 @@ const toolbarButtons = [
     { label: "Link", command: "createLink" },
     { label: "Undo", command: "undo" },
     { label: "Redo", command: "redo" },
-    { label: "file upload", command: "fileUpload" },
     { label: "Image", command: "insertImage" },
-    { label: "insertImage", command: "insertImage" },
-    { label: "view source", command: "viewSource" },
-    { label: "line spacing", command: "lineSpacing" },
-    { label: "text color", command: "textColor" },
-    { label: "tools", command: "tools" }
+    { label: "View", command: "viewSource" },
+    { label: "Spacing", command: "lineSpacing" },
+    { label: "Color", command: "textColor" },
+    { label: "Tools", command: "tools" },
 ];
 
 interface Props {
@@ -29,25 +26,41 @@ interface Props {
 
 export function WysiwygEditor({ value, onChange }: Props) {
     const editorRef = useRef<HTMLDivElement | null>(null);
-    const [html, setHtml] = useState(value);
+    const [html, setHtml] = useState(value || "");
 
     useEffect(() => {
-        setHtml(value);
+        setHtml(value || "");
     }, [value]);
 
     const applyCommand = (command: string) => {
+        editorRef.current?.focus();
+
         if (command === "createLink") {
             const url = window.prompt("Enter URL:", "https://");
             if (!url) return;
             document.execCommand(command, false, url);
-        } else {
-            document.execCommand(command, false, undefined);
+            return;
+        }
+
+        // basic supported commands
+        const supportedCommands = [
+            "bold",
+            "italic",
+            "underline",
+            "insertUnorderedList",
+            "insertOrderedList",
+            "undo",
+            "redo",
+            "insertImage",
+        ];
+
+        if (supportedCommands.includes(command)) {
+            document.execCommand(command, false);
         }
 
         const content = editorRef.current?.innerHTML || "";
         setHtml(content);
         onChange(content);
-        editorRef.current?.focus();
     };
 
     const handleInput = () => {
@@ -58,10 +71,12 @@ export function WysiwygEditor({ value, onChange }: Props) {
 
     return (
         <div className="space-y-3">
+
+            {/* TOOLBAR */}
             <div className="flex flex-wrap gap-2 rounded-2xl border border-zinc-200 bg-zinc-50 p-3">
-                {toolbarButtons.map((button) => (
+                {toolbarButtons.map((button, index) => (
                     <Button
-                        key={button.command}
+                        key={`${button.command}-${index}`}
                         type="button"
                         size="sm"
                         variant="outline"
@@ -71,11 +86,13 @@ export function WysiwygEditor({ value, onChange }: Props) {
                     </Button>
                 ))}
             </div>
+
+            {/* EDITOR */}
             <div
                 ref={editorRef}
                 contentEditable
                 suppressContentEditableWarning
-                className="min-h-55 rounded-2xl border border-zinc-200 bg-white p-4 text-sm leading-7 text-zinc-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="min-h-40 rounded-2xl border border-zinc-200 bg-white p-4 text-sm leading-7 text-zinc-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 onInput={handleInput}
                 dangerouslySetInnerHTML={{ __html: html }}
             />

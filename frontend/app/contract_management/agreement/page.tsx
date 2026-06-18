@@ -1,6 +1,8 @@
+"use client";
 import Link from "next/link";
 import ContractAgreement from "@/modules/contract_management/Components/ContractAgreement";
 import { ServiceAgreement } from "@/modules/types/contract";
+
 
 const agreement: ServiceAgreement = {
     contractId: "C-AGR-001",
@@ -22,7 +24,7 @@ const agreement: ServiceAgreement = {
     items: [
         {
             id: "item-001",
-            description: "Design and development services",
+            description: "Design and development services", 
             qty: 1,
             unit: "project",
             rate: 25000,
