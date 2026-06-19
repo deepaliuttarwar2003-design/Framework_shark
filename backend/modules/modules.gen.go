@@ -8,6 +8,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/core/module"
 	Project_Management "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/Project_Management"
+	UserManagement "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/UserManagement"
+	auth "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/auth"
 	estimate "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/estimate"
 	health "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/health"
 	inventory "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/inventory"
@@ -17,6 +19,8 @@ import (
 func LoadModules() []module.Module {
 	return []module.Module{
 		Project_Management.NewModule(),
+		UserManagement.NewModule(),
+		auth.NewModule(),
 		estimate.NewModule(),
 		health.NewModule(),
 		inventory.NewModule(),
