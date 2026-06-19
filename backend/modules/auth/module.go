@@ -5,8 +5,8 @@ import (
 
 	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/core/module"
 	authHandler "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/auth/handler"
-	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/auth/service"
 	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/auth/middleware"
+	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/auth/service"
 )
 
 const ModuleName = "auth"
@@ -46,6 +46,8 @@ func (m *Module) RegisterRoutes(r *gin.RouterGroup) {
 	r.POST("/logout", h.Logout)
 
 	r.POST("/debug", h.DebugBody)
+
+	r.POST("/logout", h.Logout)
 
 	// Health Check
 	r.GET("/", func(c *gin.Context) {

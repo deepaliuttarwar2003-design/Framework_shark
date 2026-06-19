@@ -123,6 +123,7 @@ func (h *Handler) GetProfile(c *gin.Context) {
 
 func (h *Handler) Logout(c *gin.Context) {
 
+	// Delete Cookie
 	c.SetCookie(
 		"access_token",
 		"",
@@ -133,8 +134,10 @@ func (h *Handler) Logout(c *gin.Context) {
 		true,
 	)
 
+	message := h.service.Logout()
+
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Logged Out Successfully",
+		"message": message,
 	})
 }
 

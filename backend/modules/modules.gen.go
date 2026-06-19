@@ -5,24 +5,24 @@ package modules
 import (
 	"log"
 
-	"github.com/gin-gonic/gin"
 	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/core/module"
-	auth "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/auth"
+
+	auth1 "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/auth"
 	contract_management "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/contract_management"
 	crm "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/crm"
 	health "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/health"
-	porposal "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/porposal"
 	purchase_order "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/purchase_order"
 	sales "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/sales"
+
+	"github.com/gin-gonic/gin"
 )
 
 func LoadModules() []module.Module {
 	return []module.Module{
-		auth.NewModule(),
+		auth1.NewModule(),
 		contract_management.NewModule(),
 		crm.NewModule(),
 		health.NewModule(),
-		porposal.NewModule(),
 		purchase_order.NewModule(),
 		sales.NewModule(),
 	}

@@ -111,3 +111,10 @@ func (s *Service) GetProfile(userID string) (interface{}, error) {
 
 	return user, nil
 }
+
+func (s *Service) Logout() string {
+
+	fmt.Println("===== LOGOUT SUCCESS =====")
+
+	return "Logged Out Successfully"
+}
