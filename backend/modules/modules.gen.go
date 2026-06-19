@@ -9,6 +9,8 @@ import (
 	"github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/core/module"
 	Porposal "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/Porposal"
 	Project_Management "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/Project_Management"
+	TeamManagement "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/TeamManagement"
+	UserManagement "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/UserManagement"
 	auth "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/auth"
 	contract "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/contract"
 	contract_management "github.com/Sharkweb-IT-Park/sharkweb-mvp-base/backend/modules/contract_management"
@@ -19,6 +21,8 @@ func LoadModules() []module.Module {
 	return []module.Module{
 		Porposal.NewModule(),
 		Project_Management.NewModule(),
+		TeamManagement.NewModule(),
+		UserManagement.NewModule(),
 		auth.NewModule(),
 		contract.NewModule(),
 		contract_management.NewModule(),

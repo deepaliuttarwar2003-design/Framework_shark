@@ -25,7 +25,7 @@
 //     typeof store.dispatch;
 
 import { configureStore } from "@reduxjs/toolkit";
-
+import { teamApi } from "@/modules/TeamManagement/api/teamApi";
 import { apiSlice } from "@/core/features/apiSlice";
 import { projectApi } from "@/modules/Project_Management/Api/ProjectApi";
 import userReducer from "@/modules/auth/Api/UserSlice";
@@ -36,12 +36,14 @@ export const store = configureStore({
         user: userReducer,
         [projectApi.reducerPath]:
             projectApi.reducer,
+        [teamApi.reducerPath]: teamApi.reducer,
     },
 
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware()
             .concat(apiSlice.middleware)
-            .concat(projectApi.middleware),
+            .concat(projectApi.middleware)
+            .concat(teamApi.middleware),
 });
 
 export type RootState =
