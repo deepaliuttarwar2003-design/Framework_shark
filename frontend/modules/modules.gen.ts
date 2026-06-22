@@ -5,6 +5,7 @@ import { AuthModule as authModule } from "@/modules/auth"
 import { Contract_managementModule as contract_managementModule } from "@/modules/contract_management"
 import { CrmModule as crmModule } from "@/modules/crm"
 import { SalesModule as salesModule } from "@/modules/sales"
+import { TeamModule as teamModule } from "@/modules/team"
 
 export function loadModules() {
   return [
@@ -12,6 +13,7 @@ export function loadModules() {
     authModule,
     contract_managementModule,
     crmModule,
-    salesModule
+    salesModule,
+    teamModule
   ]
 }
