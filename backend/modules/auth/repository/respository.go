@@ -8,6 +8,8 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+
 )
 
 type Repository struct {
@@ -83,4 +85,23 @@ func (r *Repository) FindByID(id string) (*model.Auth, error) {
 	}
 
 	return &user, nil
+}
+
+func CreateEmailIndex(db *mongo.Database) error {
+
+	collection := db.Collection("users")
+
+	indexModel := mongo.IndexModel{
+		Keys: bson.D{
+			{Key: "email", Value: 1},
+		},
+		Options: options.Index().SetUnique(true),
+	}
+
+	_, err := collection.Indexes().CreateOne(
+		context.Background(),
+		indexModel,
+	)
+
+	return err
 }

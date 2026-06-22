@@ -35,9 +35,9 @@ func (m *SalesModule) Init(ctx *module.ModuleContext) error {
 
 func (m *SalesModule) RegisterRoutes(r *gin.RouterGroup) {
 
-	r.POST("/create", m.handler.Create)
-	r.GET("/all", m.handler.GetAll)
-	r.GET("/:id", m.handler.GetByID)
-	r.PUT("/:id", m.handler.Update)
-	r.DELETE("/:id", m.handler.Delete)
+	r.POST("/createsales", m.handler.Create)
+	r.GET("/allsales", m.handler.GetAll)
+	r.GET("/sales/:id", m.handler.GetByID)
+	r.PUT("/sales/:id", m.handler.Update)
+	r.DELETE("/sales/:id", m.handler.Delete)
 }

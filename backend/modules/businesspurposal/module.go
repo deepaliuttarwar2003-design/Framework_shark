@@ -32,8 +32,8 @@ func (m *Module) Register(r *gin.Engine, ctx *module.ModuleContext) {
 
 	group := r.Group("/api/proposals")
 	{
-		group.POST("/create", h.Create)
-		group.GET("/", h.GetAll)
+		group.POST("/createbusiness", h.Create)
+		group.GET("/getallbusiness", h.GetAll)
 	}
 }
 

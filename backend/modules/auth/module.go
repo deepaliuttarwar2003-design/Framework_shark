@@ -35,19 +35,16 @@ func (m *Module) Init(ctx *module.ModuleContext) error {
 }
 
 func (m *Module) RegisterRoutes(r *gin.RouterGroup) {
-
 	h := m.handler
 
 	// Public Routes
-	r.POST("/register", h.Register)
-	r.POST("/login", h.Loginuser)
+	r.POST("/registerauth", h.Register)
+	r.POST("/loginauth", h.Loginuser)
 
-	r.GET("/profile", middleware.AuthMiddleware(), h.GetProfile)
-	r.POST("/logout", h.Logout)
+	r.GET("/profileauth", middleware.AuthMiddleware(), h.GetProfile)
+	r.POST("/logoutauth", h.Logout)
 
 	r.POST("/debug", h.DebugBody)
-
-	r.POST("/logout", h.Logout)
 
 	// Health Check
 	r.GET("/", func(c *gin.Context) {

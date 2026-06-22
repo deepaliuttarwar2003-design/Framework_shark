@@ -27,6 +27,12 @@ func NewService(db *mongo.Database) *Service {
 
 func (s *Service) Register(input dto.RegisterDTO) (interface{}, error) {
 
+	existingUser, err := s.repo.FindByEmail(input.Email)
+
+	if err == nil && existingUser != nil {
+		return nil, errors.New("email already registered")
+	}
+
 	hashedPassword, err := bcrypt.GenerateFromPassword(
 		[]byte(input.Password),
 		bcrypt.DefaultCost,
@@ -52,7 +58,6 @@ func (s *Service) Register(input dto.RegisterDTO) (interface{}, error) {
 
 	return result, nil
 }
-
 // ==================== LOGIN ====================
 
 func (s *Service) Login(input dto.LoginDTO) (string, error) {
