@@ -70,8 +70,8 @@ func (s *Service) Create(input dto.CreateInvoiceDTO) (model.Invoice, error) {
 		Tax:           tax,
 		TotalAmount:   total,
 		Status:        "Pending",
-		Items:         items,
-		Payment:       input.Payment,
+		// Items:         items,
+		Payment: input.Payment,
 	}
 
 	result, err := s.repo.Create(entity)
@@ -109,8 +109,8 @@ func (s *Service) Update(
 		Tax:           tax,
 		TotalAmount:   total,
 		Status:        input.Status,
-		Items:         input.Items,
-		Payment:       input.Payment,
+		// Items:         input.Items,
+		Payment: input.Payment,
 	}
 
 	updated, err := s.repo.Update(id, entity)
